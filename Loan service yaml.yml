@@ -1,0 +1,356 @@
+openapi: 3.0.1
+info:
+  title: Finx loan service
+  description: 'Service that handles loans in finx'
+  version: 11.0.0
+servers:
+  - url: 'https://finx-demo-api.fincuro.in'
+paths:
+  '/loans/accounts':
+    post:
+      tags:
+        - Loan Account
+      summary: Loan Account Controller-initiate loan account
+      description: Initiate a loan account in target system
+      operationId: initiateLoanAccount
+      requestBody:
+        $ref: '#/components/requestBodies/InitiateLoanAccountRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/InitiateLoanAccountResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      tags:
+        - Loan Account
+      summary: Loan Account controller- Search loan account
+      description: Search loan accounts from target system
+      operationId: listLoanAccounts
+      parameters:
+        - $ref: '#/components/parameters/pageSize'
+        - $ref: '#/components/parameters/pageToken'
+        - $ref: '#/components/parameters/customerId'
+
+      responses:
+        '200':
+          $ref: '#/components/responses/LoanAccountResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  '/loans/accounts/{accountId}':
+    get:
+      tags:
+        - Loan Account
+      summary: List loan account by id
+      description: List loan account from target system by id
+      operationId: listLoanAccountById
+      parameters:
+        - $ref: '#/components/parameters/accountId'
+      responses:
+        '200':
+          $ref: '#/components/responses/LoanAccountResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    InitiateLoanAccountResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: string
+          description: "/n"
+        name:
+          type: string
+          format: string
+          description: "/n" 
+        productId:
+          type: string
+          format: string
+          description: "/n" 
+        productVersionId:
+          type: string
+          format: string
+          description: "/n"
+        permittedDenominations:
+          type: array
+          items: 
+           type: string
+        openingTimeStamp:
+          type: string
+        closingTimeStamp:
+          type: string
+        status:
+          type: string
+          format: string
+          description: "/n"
+        stakeHolderIds:
+          type: array
+          items: 
+           type: string
+        instanceParamVals:
+          type: object
+          properties: 
+           arrangedOverdraftAmount:
+            type: string
+            format: string
+            description: "/n" 
+           dailyWithdrawalLimitByTransactionType:
+            type: string
+            format: string
+            description: "/n" 
+           inactivityFeeApplicationDay:
+            type: string
+            format: string
+            description: "/n" 
+           interestApplicationDay:
+            type: string
+            format: string
+            description: "/n" 
+           maintenanceFeeApplicationDay:
+            type: string
+            format: string
+            description: "/n" 
+           minimumBalanceFeeApplicationDay:
+            type: string
+            format: string
+            description: "/n" 
+           roundupAutosaveAccount:
+            type: string
+            format: string
+            description: "/n" 
+           roundupAutosaveActive:
+            type: string
+            format: string
+            description: "/n" 
+           unarrangedOverdraftAmount:
+            type: string
+            format: string
+            description: "/n" 
+           unarrangedOverdraftFeeApplicationDay:
+            type: string
+            format: string
+            description: "/n" 
+        accounting: 
+          type: object
+          properties: 
+            tside: 
+              type: string
+    InitiateLoanAccountRequest:
+      type: object
+      properties:
+        requestId: 
+         type: string
+        account:
+         type: object
+         properties: 
+          id:
+            type: string
+            format: string
+            description: "/n"
+          name:
+            type: string
+            format: string
+            description: "/n" 
+          productId:
+            type: string
+            format: string
+            description: "/n" 
+          productVersionId:
+            type: string
+            format: string
+            description: "/n"
+          permittedDenominations:
+            type: array
+            items: 
+              type: string
+          openingTimeStamp:
+            type: string
+          closingTimeStamp:
+            type: string
+          status:
+            type: string
+            format: string
+            description: "/n"
+          stakeHolderIds:
+            type: array
+            items: 
+             type: string
+          instanceParamVals:
+            type: object
+            properties: 
+              arrangedOverdraftAmount:
+                type: string
+                format: string
+                description: "/n" 
+              dailyWithdrawalLimitByTransactionType:
+                type: string
+                format: string
+                description: "/n" 
+              inactivityFeeApplicationDay:
+                type: string
+                format: string
+                description: "/n" 
+              interestApplicationDay:
+                type: string
+                format: string
+                description: "/n" 
+              maintenanceFeeApplicationDay:
+                type: string
+                format: string
+                description: "/n" 
+              minimumBalanceFeeApplicationDay:
+                type: string
+                format: string
+                description: "/n" 
+              roundupAutosaveAccount:
+                type: string
+                format: string
+                description: "/n" 
+              roundupAutosaveActive:
+                type: string
+                format: string
+                description: "/n" 
+              unarrangedOverdraftAmount:
+                type: string
+                format: string
+                description: "/n" 
+              unarrangedOverdraftFeeApplicationDay:
+                type: string
+                format: string
+                description: "/n" 
+          accounting: 
+            type: object
+            properties: 
+              tside: 
+                type: string
+           
+    
+     
+   
+    HTTPError:
+      type: object
+      properties:
+        statusCode:
+          type: string
+          description: "\n"
+          format: string
+        status:
+          type: string
+          description: "\n"
+          format: string
+        message:
+          type: string
+          description: "\n"
+          format: string
+  requestBodies:
+    InitiateLoanAccountRequest:
+      description: InitiateLoanAccountRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InitiateLoanAccountRequest'
+  responses:
+    InitiateLoanAccountResponse:
+      description: InitiateLoanAccountResponse
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InitiateLoanAccountResponse'
+    LoanAccountResponse:
+      description: LoanAccountResponse
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InitiateLoanAccountResponse'
+    
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+  parameters:
+    pageSize:    
+      name: pageSize
+      in: query
+      required: true
+      schema:
+        type: string
+    pageToken:    
+      name: pageToken
+      in: query
+      required: false
+      schema:
+        type: string
+    accountId:    
+      name: accountId
+      in: path
+      required: true
+      schema:
+        type: string
+    customerId:    
+      name: customerId
+      in: query
+      required: false
+      schema:
+        type: string
