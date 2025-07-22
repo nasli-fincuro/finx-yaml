@@ -40,7 +40,6 @@ paths:
         - $ref: '#/components/parameters/pageSize'
         - $ref: '#/components/parameters/pageToken'
         - $ref: '#/components/parameters/customerId'
-
       responses:
         '200':
           $ref: '#/components/responses/LoanAccountResponse'
@@ -82,7 +81,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    InitiateLoanAccountResponse:
+    LoanAccountResponse:
       type: object
       properties:
         id:
@@ -118,6 +117,15 @@ components:
           items: 
            type: string
         instanceParamVals:
+          $ref: '#/components/schemas/InstanceParamVals'
+        accounting:
+          $ref: '#/components/schemas/Accounting'
+    Accounting: 
+          type: object
+          properties: 
+            tside: 
+              type: string
+    InstanceParamVals:
           type: object
           properties: 
            arrangedOverdraftAmount:
@@ -160,17 +168,14 @@ components:
             type: string
             format: string
             description: "/n" 
-        accounting: 
-          type: object
-          properties: 
-            tside: 
-              type: string
     InitiateLoanAccountRequest:
       type: object
       properties:
         requestId: 
          type: string
         account:
+          $ref: '#/components/schemas/Account'
+    Account:
          type: object
          properties: 
           id:
@@ -206,57 +211,9 @@ components:
             items: 
              type: string
           instanceParamVals:
-            type: object
-            properties: 
-              arrangedOverdraftAmount:
-                type: string
-                format: string
-                description: "/n" 
-              dailyWithdrawalLimitByTransactionType:
-                type: string
-                format: string
-                description: "/n" 
-              inactivityFeeApplicationDay:
-                type: string
-                format: string
-                description: "/n" 
-              interestApplicationDay:
-                type: string
-                format: string
-                description: "/n" 
-              maintenanceFeeApplicationDay:
-                type: string
-                format: string
-                description: "/n" 
-              minimumBalanceFeeApplicationDay:
-                type: string
-                format: string
-                description: "/n" 
-              roundupAutosaveAccount:
-                type: string
-                format: string
-                description: "/n" 
-              roundupAutosaveActive:
-                type: string
-                format: string
-                description: "/n" 
-              unarrangedOverdraftAmount:
-                type: string
-                format: string
-                description: "/n" 
-              unarrangedOverdraftFeeApplicationDay:
-                type: string
-                format: string
-                description: "/n" 
+            $ref: '#/components/schemas/InstanceParamVals'
           accounting: 
-            type: object
-            properties: 
-              tside: 
-                type: string
-           
-    
-     
-   
+            $ref: '#/components/schemas/Accounting'
     HTTPError:
       type: object
       properties:
@@ -285,13 +242,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/InitiateLoanAccountResponse'
+            $ref: '#/components/schemas/LoanAccountResponse'
     LoanAccountResponse:
       description: LoanAccountResponse
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/InitiateLoanAccountResponse'
+            $ref: '#/components/schemas/LoanAccountResponse'
     
     BadRequest:
       description: BadRequest
