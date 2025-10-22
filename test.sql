@@ -8,9 +8,9 @@ CREATE TABLE `party_reference_data_directory_entry` (
     `party_reference` int NOT NULL ,
     `directory_entry_date_type` varchar(50) NOT NULL,  -- ENUM
     `directory_entry_date` TIMESTAMPTZ NOT NULL,
-    `party_type` party_type_enum NOT NULL,  -- ENUM
+    `party_type` varchar(50) NOT NULL,  -- ENUM
     `created_at` TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    `status` directory_status_enum DEFAULT 'ACTIVE'  -- ENUM
+    `status` varchar(50) DEFAULT 'ACTIVE'  -- ENUM
 );
 
