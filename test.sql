@@ -1,12 +1,6 @@
 CREATE DATABASE 'prd_directory_db';
 USE `prd_directory_db`;
 
-CREATE TYPE `directory_date_type_enum` AS ENUM (
-    'OPEN_DATE',
-    'REFRESH_DATE'
-);
-
-
 
 DROP TABLE IF EXISTS `party_reference_data_directory_entry`;
 CREATE TABLE `party_reference_data_directory_entry` (
