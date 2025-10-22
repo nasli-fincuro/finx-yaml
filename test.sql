@@ -2,15 +2,15 @@ CREATE DATABASE 'prd_directory_db';
 USE `prd_directory_db`;
 
 
-DROP TABLE IF EXISTS `party_reference_data_directory_entry`;
-CREATE TABLE `party_reference_data_directory_entry` (
-    `party_reference_data_directory_id` serial PRIMARY KEY ,
-    `party_reference` int NOT NULL ,
-    `directory_entry_date_type` varchar(50) NOT NULL,  -- ENUM
-    `directory_entry_date` TIMESTAMPTZ NOT NULL,
-    `party_type` varchar(50) NOT NULL,  -- ENUM
-    `created_at` TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-    `status` varchar(50) DEFAULT 'ACTIVE'  -- ENUM
+DROP TABLE IF EXISTS `identification_type`;
+CREATE TABLE `identification_type` (
+    `identification_type_id` SERIAL PRIMARY KEY,
+    `type_code` VARCHAR(50) UNIQUE NOT NULL,
+    `type_name` VARCHAR(100) NOT NULL,
+    `description` TEXT,
+    `country_scope` VARCHAR(3),          -- NULL for global, or specific country code
+    `is_active` BOOLEAN DEFAULT true,
+    `validation_regex` VARCHAR(200),     -- Optional: regex pattern for validation
+    `created_at` TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
