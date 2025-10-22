@@ -1,8 +1,7 @@
 CREATE DATABASE 'prd_directory_db';
 USE `prd_directory_db`;
-
 CREATE TABLE identification_type (
-	identification_type_id serial4 NOT NULL,
+	identification_type_id serial NOT NULL,
 	type_code varchar(50) NOT NULL,
 	type_name varchar(100) NOT NULL,
 	description text NULL,
