@@ -4,7 +4,7 @@ USE `prd_directory_db`;
 
 DROP TABLE IF EXISTS `identification_type`;
 CREATE TABLE `identification_type` (
-    `identification_type_id` SERIAL PRIMARY KEY,
+    `identification_type_id` int PRIMARY KEY auto_increment,
     `type_code` VARCHAR(50) UNIQUE NOT NULL,
     `type_name` VARCHAR(100) NOT NULL,
     `description` TEXT,
