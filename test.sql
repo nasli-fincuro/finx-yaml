@@ -1,42 +1,17 @@
-CREATE DATABASE 'finx_beneficiary_db';
-USE `finx_beneficiary_db`;
+CREATE DATABASE 'prd_directory_db';
+USE `prd_directory_db`;
 
-DROP TABLE IF EXISTS `beneficiary_details`;
-CREATE TABLE `beneficiary_details` (
-`beneficiary_id` uuid NOT NULL,
-`beneficiary_short_name` varchar(50) NOT NULL,
-`customer_id` varchar(32) NOT NULL,
-`beneficiary_type` varchar(20) NOT NULL,
-`beneficiary_account_type` varchar(50) ,
-`first_name` varchar(128) ,
-`last_name` varchar(128) ,
-`comp_name` varchar(128) ,
-`account_number` varchar(32) NOT NULL,
-`bene_bank_name` varchar(128) NOT NULL,
-`bene_bank_bic` varchar(16) NOT NULL,
-`corres_bank_bic_1` varchar(16),
-`corres_bank_name_1` varchar(128),
-`corres_bank_account_1` varchar(32),
-`corres_bank_bic_2`  varchar(16),
-`corres_bank_name_2` varchar(128),
-`corres_bank_account_2` varchar(32),
-`bene_acc_number_iban` varchar(34),
-`max_limit_amount` integer,
-`max_limit_number_of_transfers` integer,
-`bene_status` varchar(16),
-`approval_status` varchar(16),
-`created_on` timestamp,
-`updated_on` timestamp,
-`email` varchar(64),
-`phone_number` varchar(15),
-`national_id` varchar(15),
-`date_of_birth` date,
-`date_of_incorp` date,
-`address_line1` varchar(128),
-`address_line2` varchar(128),
-`city` varchar(16),
-`state` varchar(16),
-`country_code` varchar(16),
-`postal_code` varchar(15),
-PRIMARY KEY (`beneficiary_id`)
+
+DROP TABLE IF EXISTS `identification_type`;
+CREATE TABLE identification_type (
+	identification_type_id int NOT NULL auto_increment,
+	type_code varchar(50) NOT NULL,
+	type_name varchar(100) NOT NULL,
+	description text NULL,
+	country_scope varchar(3) NULL,
+	is_active tinyint(1,0) NULL DEFAULT 0,
+	validation_regex varchar(200) NULL,
+	created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT identification_type_pkey PRIMARY KEY (identification_type_id),
+	CONSTRAINT identification_type_type_code_key UNIQUE (type_code)
 );
