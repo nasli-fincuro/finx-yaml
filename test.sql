@@ -1,18 +1,11 @@
-CREATE DATABASE 'prd_directory_db';
-USE `prd_directory_db`;
-
-
-DROP TABLE IF EXISTS `identification_type`;
-CREATE TABLE identification_type (
-	identification_type_id int NOT NULL auto_increment,
-	type_code varchar(50) NOT NULL,
-	type_name varchar(100) NOT NULL,
-	description text NULL,
-	country_scope varchar(3) NULL,
-	is_active tinyint(1,0) NULL DEFAULT 0,
-	validation_regex varchar(200) NULL,
-	created_at timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-	CONSTRAINT identification_type_pkey PRIMARY KEY (identification_type_id),
-	CONSTRAINT identification_type_type_code_key UNIQUE (type_code)
-);
-
+CREATE DATABASE IF NOT EXISTS `rest_db` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+ USE `rest_db`;
+DROP TABLE IF EXISTS `report_access_log`;
+ CREATE TABLE `report_access_log` (
+ `id` varchar(255) NOT NULL,
+ `report_name` varchar (64),
+ `parameters` varchar (256),
+ `user_name` varchar (64),
+ `generated_timestamp` date
+ PRIMARY KEY (`id`)
+ );
