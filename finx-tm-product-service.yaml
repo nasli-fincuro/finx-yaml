@@ -1,0 +1,355 @@
+openapi: 3.0.1
+info:
+  title: Finx Products Service APIs
+  description: Service to manage the Products maintained in the corresponding Core Banking System.
+  version: v1
+servers:
+  - url: https://finx-demo-api.fincuro.in
+    description: API Server
+tags:
+  - name: Products
+    description: 'These APIs provide programmatic access to financial product data in banking systems, enabling two core functions: (1) Listing paginated products (e.g., savings accounts, loans) with pageSize/pageToken for scalable catalog browsing, and (2) Retrieving detailed product versions—including commercial terms (interest rates, fees), configurable parameters (min balance, eligibility rules), supported currencies, and trading sides.'
+paths:
+  /v1/products:
+    get:
+      tags:
+        - Products
+      summary: 'List Products '
+      description: This API endpoint retrieves a paginated list of products in JSON format. It supports optional pagination parameters (pageSize and pageToken) to control the number of records returned and navigate through large datasets.
+      operationId: listProducts
+      parameters:
+        - name: pageSize
+          in: query
+          description: Specifies the maximum number of products to return in a single response.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: A token used to fetch the next page of results, typically provided in the previous response.
+          required: false
+          schema:
+            type: string
+        - name: x-request-id
+          in: header
+          description: A unique correlation ID for tracing requests across microservices. If not provided, the system may generate one internally.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved products
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: Products not found'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/products/{productVersionId}:
+    get:
+      tags:
+        - Products
+      summary: Retrieve detailed metadata for a specific product version
+      description: |
+        Fetches comprehensive details of a financial product version, including its display name, description,
+        configurable parameters, supported denominations, and trading side (if applicable).
+      operationId: getProductDetails
+      parameters:
+        - name: x-request-id
+          in: header
+          description: Correlation ID for end-to-end tracing (UUID recommended)
+          required: false
+          schema:
+            type: string
+          example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+        - name: productVersionId
+          in: path
+          description: Unique identifier of the product version
+          required: true
+          schema:
+            type: string
+          example: prod_ver_123
+      responses:
+        '200':
+          description: Successfully retrieved product version details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductVersionDetailsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: Product version details not found'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: Timestamp when the error occurred in ISO-8601 format
+          example: '2023-11-20T14:30:45.123Z'
+        code:
+          type: integer
+          description: Application-specific error code
+          format: int32
+        message:
+          type: string
+          description: Human-readable error message
+          example: Product not found
+        stackTrace:
+          type: array
+          description: Stack trace (typically only included in non-production environments)
+          nullable: true
+          example: []
+          items:
+            type: object
+            properties:
+              classLoaderName:
+                type: string
+              moduleName:
+                type: string
+              moduleVersion:
+                type: string
+              methodName:
+                type: string
+              fileName:
+                type: string
+              lineNumber:
+                type: integer
+                format: int32
+              nativeMethod:
+                type: boolean
+              className:
+                type: string
+            description: Stack trace (typically only included in non-production environments)
+            nullable: true
+            example: []
+    Product:
+      title: products
+      type: object
+      properties:
+        id:
+          title: id
+          type: string
+          description: Id of the product
+          example: e2e_demand_deposit_ba5f05101e96c06a7e0c3a265c43678b
+        displayName:
+          title: Display name
+          type: string
+          description: Name of the product
+          example: e2e_demand_deposit_ba5f05101e96c06a7e0c3a265c43678b
+        currentVersionId:
+          title: Current version id
+          type: string
+          description: Specifies the current version of the product
+          example: '266'
+        internal:
+          type: boolean
+      description: The array of products
+      example:
+        - id: celta_demand_account
+          displayName: Demand Account
+          currentVersionId: '278'
+          internal: false
+        - id: e2e_demand_account_e44a22405bdfe180a7e4d1c88045508d
+          displayName: e2e_demand_account_e44a22405bdfe180a7e4d1c88045508d
+          currentVersionId: '270'
+          internal: false
+    ProductResponse:
+      type: object
+      properties:
+        products:
+          title: products
+          type: array
+          description: The array of products
+          example:
+            - id: celta_demand_account
+              displayName: Demand Account
+              currentVersionId: '278'
+              internal: false
+            - id: e2e_demand_account_e44a22405bdfe180a7e4d1c88045508d
+              displayName: e2e_demand_account_e44a22405bdfe180a7e4d1c88045508d
+              currentVersionId: '270'
+              internal: false
+          items:
+            $ref: '#/components/schemas/Product'
+        previousPageToken:
+          title: previous page token
+          type: string
+          description: The token that can be used to access the previous page of API results
+          example: MTB
+        nextPageToken:
+          title: next page token
+          type: string
+          description: The token that can be used to access the next page of API results
+          example: MTB
+    Param:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The unique identifier/name of the parameter.
+          example: additional_denominations
+        displayName:
+          type: string
+          description: A user-friendly display name for the parameter.
+          example: Additional Denominations
+        description:
+          type: string
+          description: A detailed description explaining the purpose of the parameter.
+          example: Currencies that are accepted for this account, formatted as a json list of currency codes
+        value:
+          type: string
+          description: The current value assigned to the parameter.
+          example: '[\"USD\"]'
+        defaultValue:
+          type: string
+          description: The default value of the parameter if no override is set.
+        effectiveTimestamp:
+          type: string
+          description: Timestamp indicating when the current value became effective (ISO 8601 format).
+          example: '2024-01-15T12:00:00Z'
+        level:
+          type: string
+          description: The level at which this parameter is defined (e.g., PRODUCT).
+          example: LEVEL_PRODUCT
+        updatePermission:
+          type: string
+          description: Permission required to modify this parameter.
+          example: UPDATE_PERMISSION_UNKNOWN
+        derived:
+          type: boolean
+          description: Indicates whether the value is derived from a formula/rule rather than set directly.
+          example: false
+        account:
+          type: object
+          description: Associated account details.
+        number:
+          type: object
+          description: Associated number.
+        optional:
+          type: boolean
+      description: Represents a parameter with metadata such as name, description, value, and access permissions.
+      example:
+        - name: additional_denominations
+          displayName: Additional Denominations
+          description: Currencies that are accepted for this account, formatted as a json list of currency codes
+          value: '["USD"]'
+          defaultValue: ''
+          effectiveTimestamp: '1970-01-01T00:00:00Z'
+          level: LEVEL_PRODUCT
+          updatePermission: UPDATE_PERMISSION_UNKNOWN
+          derived: false
+          account: null
+          number: null
+          optional: false
+    ProductVersionDetailsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the product version.
+          example: '286'
+        displayName:
+          type: string
+          description: Human-readable display name for the product version.
+          example: Demand Account
+        description:
+          type: string
+          description: Detailed description of the product version's features and terms.
+          example: High-yield savings account with tiered interest rates.
+        summary:
+          type: string
+          description: Brief summary of the product version.
+          example: Tiered-interest savings account for retail customers.
+        params:
+          type: array
+          description: List of configurable parameters for this product version.
+          example:
+            - name: additional_denominations
+              displayName: Additional Denominations
+              description: Currencies that are accepted for this account, formatted as a json list of currency codes
+              value: '["USD"]'
+              defaultValue: ''
+              effectiveTimestamp: '1970-01-01T00:00:00Z'
+              level: LEVEL_PRODUCT
+              updatePermission: UPDATE_PERMISSION_UNKNOWN
+              derived: false
+              account: null
+              number: null
+              optional: false
+          items:
+            $ref: '#/components/schemas/Param'
+        productId:
+          type: string
+          description: Product ID this version belongs to.
+          example: prod_savings_001
+        tside:
+          type: string
+          description: Trading side - applicable for trading products.
+          example: TSIDE_LIABILITY
+        supportedDenominations:
+          type: array
+          description: Supported currency denominations for this product.
+          example:
+            - USD
+            - EUR
+            - GBP
+          items:
+            type: string
+            description: Supported currency denominations for this product.
+            example: '["USD","EUR","GBP"]'
+      description: Represents detailed metadata about a specific version of a financial product.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
