@@ -1,0 +1,287 @@
+openapi: 3.0.3
+info:
+  title: Finx Customer Screening Service APIs
+  description: API for customer screening
+  version: 1.0.0
+
+servers:
+  - url: https://finx-bian-api.fincuro.in
+    description: API server
+
+paths:
+  /customer-screening/initiate:
+    post:
+      summary: Initiate customer screening in target system
+      description: Creates a customer and performs screening in a synchronous workflow
+      operationId: initiateCustomerScreening
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScreeningRequest'
+            example:
+              configuration:
+                screeningConfigurationIdentifier: "0193c36a-fa34-7e93-a4fa-9cfa0d55e3a0"
+              customer:
+                externalIdentifier: "VK878123"
+                person:
+                  lastName: "Govind"
+                  address:
+                    - addressLine1: "Vrindavan"
+                      addressLine2: "Keli Kunj"
+                      country: "IN"
+                      postalCode: "409101"
+                      townName: "Vrindavan"
+                      type: "RESIDENTIAL_ADDRESS"
+                    - addressLine1: "Kashi"
+                      addressLine2: "Banaras"
+                      country: "IN"
+                      postalCode: "560022"
+                      townName: "Varanasi"
+                      type: "MAILING_ADDRESS"
+                  contactInformation:
+                    emailAddress:
+                      - "vijayk29@yahoo.com"
+                      - "vijayk29@abc.com"
+                    phoneNumber:
+                      - "+917045843647"
+                      - "+917239121121"
+                  countryOfBirth: "IN"
+                  dateOfBirth:
+                    day: "21"
+                    month: "03"
+                    year: "1975"
+                  firstName: "Hari Narayan"
+                  gender: "MALE"
+                  nationality:
+                    - "IN"
+                    - "GD"
+              monitoring:
+                entityScreening:
+                  enabled: true
+      responses:
+        '200':
+          description: Workflow completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreeningResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+  /customer-screening/{screeningIdentifier}/status:
+    get:
+      summary: Get screening status and result
+      description: Retrieve the status and detailed results of a workflow instance
+      operationId: getScreeningStatus
+      parameters:
+        - name: screeningIdentifier
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "019a11dd-0f6a-7424-bea0-11d193a815e6"
+      responses:
+        '200':
+          description: Workflow details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreeningResponse'
+        '404':
+          description: Workflow not found
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    ScreeningRequest:
+      type: object
+      required:
+        - configuration
+        - customer
+      properties:
+        configuration:
+          $ref: '#/components/schemas/Configuration'
+        customer:
+          $ref: '#/components/schemas/Customer'
+        monitoring:
+          $ref: '#/components/schemas/Monitoring'
+
+    Configuration:
+      type: object
+      required:
+        - screeningConfigurationIdentifier
+      properties:
+        screeningConfigurationIdentifier:
+          type: string
+          format: uuid
+          description: Unique identifier for the screening configuration
+
+    Customer:
+      type: object
+      required:
+        - externalIdentifier
+        - person
+      properties:
+        externalIdentifier:
+          type: string
+          description: External reference identifier for the customer
+        person:
+          $ref: '#/components/schemas/Person'
+
+    Person:
+      type: object
+      required:
+        - lastName
+        - firstName
+      properties:
+        lastName:
+          type: string
+        firstName:
+          type: string
+        address:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+        contactInformation:
+          $ref: '#/components/schemas/ContactInformation'
+        countryOfBirth:
+          type: string
+          pattern: '^[A-Z]{2}$'
+          description: ISO 3166-1 alpha-2 country code
+        dateOfBirth:
+          $ref: '#/components/schemas/DateOfBirth'
+        gender:
+          type: string
+          enum: [MALE, FEMALE, OTHER]
+        nationality:
+          type: array
+          items:
+            type: string
+            pattern: '^[A-Z]{2}$'
+            description: ISO 3166-1 alpha-2 country code
+
+    Address:
+      type: object
+      required:
+        - addressLine1
+        - country
+        - townName
+        - type
+      properties:
+        addressLine1:
+          type: string
+        addressLine2:
+          type: string
+        country:
+          type: string
+          pattern: '^[A-Z]{2}$'
+          description: ISO 3166-1 alpha-2 country code
+        countrySubdivision:
+          type: string
+        postalCode:
+          type: string
+        townName:
+          type: string
+        type:
+          type: string
+          enum: [RESIDENTIAL_ADDRESS, MAILING_ADDRESS]
+
+    ContactInformation:
+      type: object
+      properties:
+        emailAddress:
+          type: array
+          items:
+            type: string
+            format: email
+        phoneNumber:
+          type: array
+          items:
+            type: string
+            pattern: '^\+[1-9]\d{1,14}$'
+            description: E.164 format phone number
+
+    DateOfBirth:
+      type: object
+      required:
+        - day
+        - month
+        - year
+      properties:
+        day:
+          type: string
+          pattern: '^(0[1-9]|[12][0-9]|3[01])$'
+        month:
+          type: string
+          pattern: '^(0[1-9]|1[0-2])$'
+        year:
+          type: string
+          pattern: '^\d{4}$'
+
+    Monitoring:
+      type: object
+      properties:
+        entityScreening:
+          $ref: '#/components/schemas/EntityScreening'
+
+    EntityScreening:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          default: false
+
+    ScreeningResponse:
+      type: object
+      properties:
+        workflowInstanceIdentifier:
+          type: string
+          format: uuid
+        workflowType:
+          type: string
+          enum: [create-and-screen]
+        steps:
+          type: array
+          items:
+            type: string
+            enum: [customer-creation, initial-risk-scoring, customer-screening, alerting, case-creation]
+        status:
+          type: string
+          enum: [COMPLETED, IN_PROGRESS, FAILED, CANCELLED, SKIPPED]
+        stepDetails:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/StepDetail'
+
+    StepDetail:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [COMPLETED, IN_PROGRESS, FAILED, CANCELLED, SKIPPED]
+        identifier:
+          type: string
+          format: uuid
+          nullable: true
+        stepOutput:
+          type: object
+          additionalProperties: true
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
