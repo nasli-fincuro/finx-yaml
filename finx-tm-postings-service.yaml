@@ -1,0 +1,527 @@
+openapi: 3.0.1
+info:
+  title: Finx TM Postings APIs
+  description: Service to manage Financial postings such as deposits, withdrawals, transfers, and balance inquiries.
+  version: v1
+servers:
+  - url: https://finx-demo-api.fincuro.in
+    description: API Server
+tags:
+  - name: Postings
+    description: |
+      Posting APIs manages initiation of deposits, withdrawals, fund transfer, account postings and account balance:
+
+      Initiate Posting: Initiates a posting (transaction) for an account, typically triggered from the UI.
+
+      Initiate Withdrawal Posting: Initiates a withdrawal posting for an account (debit transaction).
+
+      Initiate Deposit Posting: Initiates a deposit posting for an account (credit transaction).
+
+      Initiate Fund Transfer: Initiates a fund transfer between accounts.
+
+      Retrieve Posting Details: Retrieves detailed information about a specific posting by its ID.
+
+      Retrieve Account Postings: Retrieves a list of postings (transactions) for a specific account.
+
+      RetrieveAccount Balance: Retrieves the current balance of a specific account.
+
+      Retrieve All Postings: Retrieves a list of all postings.
+paths:
+  /v1/postings/postings/initiate:
+    post:
+      tags:
+        - Postings
+      summary: Initiate posting for an account(from UI).
+      description: |
+        This API initiates a posting transaction between two accounts, typically triggered from the UI. It processes the transfer details and returns the posting result along with any violations encountered.
+      operationId: initiatePostings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiatetransferRequest'
+        required: true
+      responses:
+        '201':
+          description: Successfully Initiated Posting
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitiatePostingsResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: Posting not found'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/postings/{accountId}/postings/retrieve:
+    get:
+      tags:
+        - Postings
+      summary: Retrieve list of postings of an account
+      description: |
+        This API retrieves a paginated list of postings for a specified account, filtered optionally by date range. It returns transaction details like amount, type, date, description, status, and pagination tokens for navigating results.
+      operationId: retrieveAccountpostings
+      parameters:
+        - name: accountId
+          in: path
+          description: Unique Identifier for Account.
+          required: true
+          schema:
+            type: string
+        - name: pageSize
+          in: query
+          description: Specifies the maximum number of account postings to return in a single response.
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: pageToken
+          in: query
+          description: A token used to fetch the next page of results, typically provided in the previous response.
+          required: false
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          description: The start date (inclusive) for filtering account postings, in yyyy-MM-dd format.
+          required: false
+          schema:
+            type: string
+        - name: endDate
+          in: query
+          description: The end date (inclusive) for filtering account postings, in yyyy-MM-dd format.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully Retrieved Account Postings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionListResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or Invalid Authentication Token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient Permissions to Access this Resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: Account Posting Not Found'
+          content:
+            application/json: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /v1/postings/{accountId}/balance/retrieve:
+    get:
+      tags:
+        - Postings
+      summary: Retrieve balance of an account.
+      description: |
+        This API retrieves the current balance of a specific account using its accountId. It returns the balance amount along with the timestamp of the balance.
+      operationId: retrieveBalance
+      parameters:
+        - name: accountId
+          in: path
+          description: Unique Identifier for Account.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully Retrieved Balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveBalanceResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or Invalid Authentication Token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient Permissions to Access this Resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: Balance Not Found'
+          content:
+            application/json: {}
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+components:
+  schemas:
+    InitiatetransferRequest:
+      type: object
+      properties:
+        transferOccurrenceMessage:
+          $ref: '#/components/schemas/TransferOccurrence'
+      description: Request to initiate a transfer, containing the transfer occurrence message.
+      example:
+        transferOccurrenceMessage:
+          occurrenceFromAccountId: '20240801'
+          occurrenceToAccountId: '20240802'
+          createdDateTime: '2024-06-01T12:00:00Z'
+          eventName: TransferInitiated
+          note: Monthly transfer
+          occurrenceAmount:
+            value: '250.00'
+            currencyCode: USD
+    OccurrenceAmount:
+      type: object
+      properties:
+        value:
+          type: string
+          description: The amount value for the occurrence
+          example: '250.0'
+        currencyCode:
+          type: string
+          description: The currency code of the amount
+          example: USD
+      description: Represents an amount with its currency code for a specific occurrence.
+      example:
+        value: '250.00'
+        currencyCode: USD
+    TransferOccurrence:
+      type: object
+      properties:
+        occurrenceFromAccountId:
+          type: string
+          description: Account ID from which the occurrence is initiated
+          example: ACC-1001
+        occurrenceToAccountId:
+          type: string
+          description: Account ID to which the occurrence is directed
+          example: ACC-2002
+        createdDateTime:
+          type: string
+          description: Timestamp when the occurrence was created
+          example: '2024-06-01T12:00:00Z'
+        eventName:
+          type: string
+          description: Name of the event for the occurrence
+          example: TransferInitiated
+        note:
+          type: string
+          description: Additional note for the occurrence
+          example: Monthly transfer
+        occurrenceAmount:
+          $ref: '#/components/schemas/OccurrenceAmount'
+      description: Represents a transfer occurrence, including account IDs, timestamps, event details, notes, and the amount.
+      example:
+        occurrenceFromAccountId: ACC-1001
+        occurrenceToAccountId: ACC-2002
+        createdDateTime: '2024-06-01T12:00:00Z'
+        eventName: TransferInitiated
+        note: Monthly transfer
+        occurrenceAmount:
+          value: '250.00'
+          currencyCode: USD
+    InitiatePostingsResponse:
+      type: object
+      properties:
+        postingId:
+          type: string
+          description: Unique identifier for the posting
+          example: POST-12345
+        clientTransactionId:
+          type: string
+          description: Client-provided transaction ID
+          example: CLIENT-TXN-67890
+        status:
+          type: string
+          description: Status of the posting initiation
+          example: SUCCESS
+        postingViolations:
+          type: object
+          properties:
+            type:
+              type: string
+              description: Type of posting violation
+              example: INSUFFICIENT_FUNDS
+          description: Represents a posting violation, specifying the type of violation.
+          example:
+            type: INSUFFICIENT_FUNDS
+        accountViolations:
+          type: object
+          properties:
+            accountId:
+              type: string
+              description: ID of the account where the violation occurred
+              example: ACC-789012
+            paymentDeviceToken:
+              type: string
+              description: Token of the payment device involved in the violation
+              example: TOKEN-12345
+            type:
+              type: string
+              description: Type of account violation
+              example: DEVICE_MISMATCH
+          description: Represents an account violation, including account ID, payment device token, and type of violation.
+          example:
+            accountId: ACC-789012
+            paymentDeviceToken: TOKEN-12345
+            type: DEVICE_MISMATCH
+        restrictionViolations:
+          type: object
+          properties:
+            restrictionSetId:
+              type: string
+              description: ID of the restriction set
+              example: RS-001
+            accountId:
+              type: string
+              description: ID of the account involved in the violation
+              example: ACC-123456
+            paymentDeviceId:
+              type: string
+              description: ID of the payment device involved in the violation
+              example: PD-7890
+            customerId:
+              type: string
+              description: ID of the customer involved in the violation
+              example: CUST-4567
+            requiresReview:
+              type: string
+              description: Indicates if the violation requires review
+              example: 'true'
+          description: Represents a restriction violation, including restriction set ID, account ID, payment device ID, customer ID, and review requirement.
+          example:
+            restrictionSetId: RS-001
+            accountId: ACC-123456
+            paymentDeviceId: PD-7890
+            customerId: CUST-4567
+            requiresReview: 'true'
+        contractViolations:
+          type: object
+          properties:
+            accountId:
+              type: string
+              description: ID of the account where the violation occurred
+              example: ACC-123456
+            type:
+              type: string
+              description: Type of contract violation
+              example: LIMIT_EXCEEDED
+            reason:
+              type: string
+              description: Reason for the contract violation
+              example: Withdrawal limit exceeded for the day
+          description: Represents a contract violation, including the account ID, type, and reason for the violation.
+          example:
+            accountId: ACC-123456
+            type: LIMIT_EXCEEDED
+            reason: Withdrawal limit exceeded for the day
+      description: Response for initiating postings, including posting ID, client transaction ID, status, and any violations.
+      example:
+        postingId: 1ac8d984-3458-4137-9ce3-531c9c84a135
+        clientTransactionId: e88f3012-e616-4e0e-ae06-8647ef6ad6cc
+        status: SUCCESS
+        postingViolations:
+          - type: INSUFFICIENT_FUNDS
+        accountViolations:
+          - accountId: '20240801'
+            paymentDeviceToken: TOKEN-12345
+            type: DEVICE_MISMATCH
+        restrictionViolations:
+          - restrictionSetId: RS-001
+            accountId: ACC-123456
+            paymentDeviceId: PD-7890
+            customerId: CUST-4567
+            requiresReview: 'true'
+        contractViolations:
+          - accountId: '20240802'
+            type: LIMIT_EXCEEDED
+            reason: Withdrawal limit exceeded for the day
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: Timestamp when the error occurred in ISO-8601 format
+          example: '2023-11-20T14:30:45.123Z'
+        code:
+          type: integer
+          description: Application-specific error code
+          format: int32
+          example: 1018
+        message:
+          type: string
+          description: Human-readable error message
+          example: Party not found
+    TransactionListResponse:
+      type: object
+      properties:
+        transactionList:
+          type: object
+          properties:
+            postingId:
+              type: string
+              description: Unique identifier for the posting
+              example: POST-12345
+            amount:
+              type: number
+              description: Transaction amount
+              format: double
+              example: 2500.75
+            transType:
+              type: string
+              description: Type of transaction (e.g., DEBIT, CREDIT)
+              example: DEBIT
+            transactionDate:
+              type: string
+              description: Date and time of the transaction
+              example: '2024-06-01T10:15:30Z'
+            transactionDescription:
+              type: string
+              description: Description of the transaction
+              example: ATM Withdrawal
+            insertionDate:
+              type: string
+              description: Date and time when the transaction was inserted
+              example: '2024-06-01T10:16:00Z'
+            status:
+              type: string
+              description: Status of the transaction
+              example: COMPLETED
+            currencyCode:
+              type: string
+              description: Currency code for the transaction
+              example: USD
+          description: Represents a transaction entry with posting ID, amount, type, dates, description, status, and currency.
+          example:
+            postingId: POST-12345
+            amount: 2500.75
+            transType: DEBIT
+            transactionDate: '2024-06-01T10:15:30Z'
+            transactionDescription: ATM Withdrawal
+            insertionDate: '2024-06-01T10:16:00Z'
+            status: COMPLETED
+            currencyCode: USD
+        previousPageToken:
+          type: string
+          description: Token for the previous page of results
+          example: prev-001
+        nextPageToken:
+          type: string
+          description: Token for the next page of results
+          example: next-002
+      description: Response containing a list of transactions and pagination tokens.
+      example:
+        transactionList:
+          - postingId: e88f3012-e616-4e0e-ae06-8647ef6ad6cc
+            amount: 2500.75
+            transType: DEBIT
+            transactionDate: '2024-06-01T10:15:30Z'
+            transactionDescription: ATM Withdrawal
+            insertionDate: '2024-06-01T10:16:00Z'
+            status: COMPLETED
+            currencyCode: USD
+        previousPageToken: prev-001
+        nextPageToken: next-002
+    AccountBalance:
+      type: object
+      properties:
+        amountValue:
+          type: string
+          description: The value of the account balance
+          example: '1500.0'
+      description: Represents the balance of an account with the amount value.
+      example:
+        amountValue: '1500.00'
+    AccountBalanceDate:
+      type: object
+      properties:
+        dateTimeContent:
+          type: string
+          description: The date and time content related to the account balance
+          example: '2024-06-01T10:15:30Z'
+      description: Represents the date and time content for an account balance.
+      example:
+        dateTimeContent: '2024-06-01T10:15:30Z'
+    Balances:
+      type: object
+      properties:
+        accountBalance:
+          $ref: '#/components/schemas/AccountBalance'
+        accountBalanceDate:
+          $ref: '#/components/schemas/AccountBalanceDate'
+      description: Represents account balances with balance value and date information.
+      example:
+        accountBalance:
+          amountValue: '1500.00'
+        accountBalanceDate:
+          dateTimeContent: '2024-06-01T10:15:30Z'
+    RetrieveBalanceResponse:
+      type: object
+      properties:
+        balances:
+          $ref: '#/components/schemas/Balances'
+        previousPageToken:
+          type: string
+          description: Token to retrieve the previous page of results.
+          example: prev-token-123
+        nextPageToken:
+          type: string
+          description: Token to retrieve the next page of results.
+          example: next-token-456
+      description: Response DTO for retrieving account balances with pagination tokens.
+      example:
+        balances:
+          accountBalance:
+            amountValue: '1500.00'
+          accountBalanceDate:
+            dateTimeContent: '2024-06-01T10:15:30Z'
+        previousPageToken: prev-token-123
+        nextPageToken: next-token-456
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
