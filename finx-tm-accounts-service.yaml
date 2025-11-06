@@ -1,0 +1,1246 @@
+openapi: 3.0.1
+info:
+  title: Finx Account Service APIs
+  description: Service for the Account Management where the Accounts are maintained in the corresponding Core Banking System.
+  version: v1, v2
+servers:
+  - url: https://finx-demo-api.fincuro.in
+    description: API Server
+tags:
+  - name: Accounts
+    description: |
+      APIs related to account lifecycle management in Thought Machine.
+
+      * **Account Creation** – Create accounts with payment-related configurations.
+
+      * **Get Account (v1/v2)** – Retrieve account details via versioned endpoints.
+
+      * **Initiate Update** – Update account attributes or metadata.
+
+paths:
+  /account-management/v2/account/status-update/{accountReference}:
+    put:
+      tags:
+        - Accounts
+      summary: Update a account status v2 for a customer
+      description: Updates the status of an existing account (e.g., from OPEN to INACTIVE) Version 2 for a given customer. The account reference is passed in the path, while the request body contains the new status and related metadata.
+      operationId: updateV2AccountStatus
+      parameters:
+        - name: x-request-id
+          in: header
+          description: Unique identifier for tracking the request across systems (optional).
+          required: false
+          schema:
+            type: string
+        - name: accountReference
+          in: path
+          description: Unique reference of the account whose status needs to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiateUpdateAccountV2StatusRequest'
+        required: true
+      responses:
+        '200':
+          description: Account status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitiateUpdateAccountStatusRequest'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - Bearer token is missing or invalid
+          content:
+            application/json: {}
+        '404':
+          description: Account not found
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json: {}
+      security:
+        - bearerAuth: []
+  /account-management/v2/account/vp/initiate:
+    post:
+      tags:
+        - Accounts
+      summary: Initiate a  account  with Vault payment Link for a customer -Version 2
+      description: |
+        Creates a new current account for a customer and links it with a Vault Payment instrument.
+        This endpoint is typically used during:
+        - Customer onboarding
+        - Account creation with payment instrument linkage
+        - Advanced account setup requiring Vault integration
+      operationId: initiateVpAccount
+      parameters:
+        - name: x-request-id
+          in: header
+          description: Optional correlation ID for request tracing
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiateVpAccountV2Request'
+        required: true
+      responses:
+        '201':
+          description: Successfully initiated VP current account with linked payment instrument
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitiateVpAccountResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to perform this action'
+          content:
+            application/json: {}
+        '500':
+          description: 'Internal Server Error: Unexpected error while initiating VP account'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /account-management/v2/account/initiate:
+    post:
+      tags:
+        - Accounts
+      summary: Initiate a account for a customer version 2
+      description: |
+        Initiates the creation of a new current account version 2 in Thought Machine linked to the corresponding Party.
+
+        Used for:
+        - Customer onboarding with a new current account
+        - Adding additional current accounts to an existing customer
+        - Initiating account creation with required KYC and product details
+      operationId: initiateAccount
+      parameters:
+        - name: x-request-id
+          in: header
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiateAccountRequest'
+        required: true
+      responses:
+        '201':
+          description: Successfully created account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitiateCurrentAccountResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: Party not found'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /account-management/paymentInstruments/search:
+    post:
+      tags:
+        - Accounts
+      summary: Initiate search payment instrument
+      description: This API initiates a search for payment instruments associated with a customer or account. The search can be filtered using parameters such as payment instrument type, status, or associated account. The response includes matching payment instrument details.
+      operationId: searchPaymentInstrument
+      parameters:
+        - name: x-request-id
+          in: header
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiateSearchPaymentInstrumentRequest'
+        required: true
+      responses:
+        '200':
+          description: Successfully retrieved Payment instrument
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponseDTO'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: No account found for the given reference'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json: {}
+      security:
+        - bearerAuth: []
+  /account-management/v2/accounts/retrieve/details/{accountReference}:
+    get:
+      tags:
+        - Accounts
+      summary: Retrieve account details based on the account number.
+      description: |
+        Fetches detailed information about a specific account using its unique account reference.
+        This endpoint is typically used for:
+        - Retrieving customer account details for servicing or reporting
+        - Validating account status during payment processing
+        - Linking external systems with account metadata
+
+        Required: A valid `accountReference` must be provided as a path parameter.
+      operationId: retrieveAccountDetailsById
+      parameters:
+        - name: accountReference
+          in: path
+          description: Unique account reference identifier assigned to the customer account
+          required: true
+          schema:
+            type: string
+          example: 7c11c71a-0a0b-4204-ab49-a01165024e2a
+      responses:
+        '200':
+          description: Successfully retrieved account details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponseDTO'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: No account found for the given reference'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json: {}
+      security:
+        - bearerAuth: []
+  /account-management/v2/account/{partyReference}/retrieve:
+    get:
+      tags:
+        - Accounts
+      summary: Retrieve list of accounts for a customer with filters
+      description: Fetches accounts associated with a stakeholder (customer/party) with optional filters for type, status, smart contract version, and pagination.
+      operationId: retrieveAccounts
+      parameters:
+        - name: partyReference
+          in: path
+          description: Stakeholder/Party Reference ID
+          required: true
+          schema:
+            type: string
+          example: aca3bf1c-e634-47bb-8351-d6cdf7c078d0
+        - name: page_size
+          in: query
+          description: Maximum number of records to return (page size)
+          required: false
+          schema:
+            type: integer
+            format: int32
+          example: 50
+        - name: type
+          in: query
+          description: Account type to filter
+          required: true
+          schema:
+            type: string
+          example: ACCOUNT_TYPE_CUSTOMER
+        - name: statuses
+          in: query
+          description: Comma-separated account statuses to filter
+          required: false
+          schema:
+            type: string
+          example: ACCOUNT_STATUS_OPEN,ACCOUNT_STATUS_CLOSED
+        - name: smart_contract_version_ids
+          in: query
+          description: Filter by smart contract version ID
+          required: false
+          schema:
+            type: integer
+            format: int32
+          example: 73
+        - name: order_by
+          in: query
+          description: Field to order results by
+          required: false
+          schema:
+            type: string
+          example: updateTimestamp desc
+        - name: page_token
+          in: query
+          description: Pagination token to retrieve the next set of results
+          required: false
+          schema:
+            type: string
+          example: eyJwYWdlIjoxfQ==
+      responses:
+        '200':
+          description: Successfully retrieved account details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponseDTO'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: No account found for the given reference'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json: {}
+      security:
+        - bearerAuth: []
+  /account-management/v2/account/gl-accounts:
+    get:
+      tags:
+        - Accounts
+      summary: Retrieve the list of GL accounts for a given Product ID with applicable filters.
+      description: Retrieve the list of GL accounts for a given Product ID with applicable filters.
+      operationId: retrieveAccounts_1
+      parameters:
+        - name: productId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: smart_contract_version_ids
+          in: query
+          description: Smart contract version ID
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: order_by
+          in: query
+          description: Order by
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved GL details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponseDTO'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: No gl account found for the given parameters'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json: {}
+      security:
+        - bearerAuth: []
+  /account-management/v1/account/{accountReference}/outstanding-balance/retrieve:
+    get:
+      tags:
+        - Accounts
+      summary: Retrieve outStanding balance of an account.
+      description: This API retrieves the outstanding balance for a specific account based on the provided account reference. The response includes the outstanding balance amount, currency, and the effective timestamp of the balance.
+      operationId: retrieveOutStandingBalance
+      parameters:
+        - name: accountReference
+          in: path
+          description: Unique reference identifier for the account
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved account balance
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponseDTO'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: No account found for the given reference'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json: {}
+      security:
+        - bearerAuth: []
+  /account-management/currentAccount/{partyReference}/retrieve:
+    get:
+      tags:
+        - Accounts
+      summary: Retrieve list of accounts of a customer
+      description: |
+        Retrieves the list of current accounts and balances for a given customer (identified by party reference).
+
+        Used for:
+        - Viewing all active current accounts linked to a customer
+        - Checking balances across multiple accounts
+        - Enabling downstream services to display or process account information
+      operationId: retrieveAccounts_2
+      parameters:
+        - name: partyReference
+          in: path
+          description: Unique identifier of the party to get account details
+          required: true
+          schema:
+            type: string
+          example: f143a3a0-5eb6-40b7-8b93-ce5785f3f682
+      responses:
+        '200':
+          description: Successfully retrieved account
+          content:
+            application/json: {}
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: account not found'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+components:
+  schemas:
+    CurrentAccount:
+      required:
+        - accountStatus
+      type: object
+      properties:
+        accountStatus:
+          type: string
+          description: 'New status of the account. Possible values include: ACCOUNT_STATUS_OPEN, ACCOUNT_STATUS_INACTIVE, ACCOUNT_STATUS_CLOSED.'
+          example: ACCOUNT_STATUS_CLOSED
+        accountClosingDate:
+          type: string
+          description: Account closing Date
+      description: Details of the current account whose status needs to be updated.
+      example:
+        currentAccount:
+          accountStatus: ACCOUNT_STATUS_CLOSED
+    InitiateUpdateAccountV2StatusRequest:
+      required:
+        - currentAccount
+      type: object
+      properties:
+        currentAccount:
+          $ref: '#/components/schemas/CurrentAccount'
+        smartContractVersionId:
+          type: string
+          description: Identifier of the smart contract version associated with this account.
+          example: v2.3.1
+      description: Request body to update the status of an account.
+      example:
+        currentAccount:
+          accountStatus: ACCOUNT_STATUS_CLOSED
+    InitiateUpdateAccountStatusRequest:
+      required:
+        - currentAccount
+      type: object
+      properties:
+        currentAccount:
+          $ref: '#/components/schemas/CurrentAccount'
+      description: Request object for updating the status of a current account.
+      example:
+        currentAccount:
+          accountStatus: ACCOUNT_STATUS_CLOSED
+    AccountCurrency:
+      required:
+        - currencyCode
+      type: object
+      properties:
+        currencyCode:
+          type: string
+          description: Three-letter ISO 4217 currency code for the account.
+          example: USD
+      description: Currency in which the account will be maintained (e.g., USD, EUR).
+      example:
+        currencyCode: USD
+    AccountFacility:
+      required:
+        - accountCurrency
+        - customerReference
+        - externalCustomerReference
+        - productInstanceParameters
+        - productInstanceReference
+      type: object
+      properties:
+        customerReference:
+          type: string
+          description: Unique reference of the customer for whom the account is being created
+          example: 7587b5ee-7ff7-4e32-ab93-0a393614e15a
+        externalCustomerReference:
+          type: string
+          description: External reference identifier for the customer, usually provided by an upstream or external system
+          example: CP0001234
+        productInstanceReference:
+          $ref: '#/components/schemas/ProductInstanceReferenceV2'
+        accountCurrency:
+          $ref: '#/components/schemas/AccountCurrency'
+        accountStatus:
+          $ref: '#/components/schemas/AccountStatus'
+        productInstanceParameters:
+          $ref: '#/components/schemas/ProductInstanceParametersV2'
+      description: Defines the facility (account entity) to be created for the customer
+      example:
+        customerReference: 7587b5ee-7ff7-4e32-ab93-0a393614e15a
+        externalCustomerReference: CP0001234
+        productInstanceReference:
+          accountAgreement: '350'
+        accountCurrency:
+          currencyCode: USD
+        accountStatus:
+          statusReason:
+            text: ACCOUNT_STATUS_OPEN
+        productInstanceParameters:
+          onboardingFee:
+            amount: '10'
+          monthlyFee:
+            amount: '100'
+          maintenanceFeeApplicationDay:
+            day: '1'
+    AccountStatus:
+      required:
+        - statusReason
+      type: object
+      properties:
+        statusReason:
+          $ref: '#/components/schemas/StatusReason'
+      description: Initial status of the account, such as open or inactive, including the reason for the status.
+      example:
+        statusReason:
+          text: ACCOUNT_STATUS_OPEN
+    InitiateVpAccountV2Request:
+      required:
+        - accountFacility
+        - businessType
+      type: object
+      properties:
+        accountFacility:
+          $ref: '#/components/schemas/AccountFacility'
+        businessType:
+          type: string
+          description: Type of business associated with the account, e.g., Individual, Corporate, Trust
+      description: Payload containing customer reference, account details, and product instance parameters
+      example:
+        accountFacility:
+          customerReference: 824ff5d0-08ba-4e74-9e1d-2d4c5fb37730
+          externalCustomerReference: CP0001234
+          productInstanceReference:
+            accountAgreement: '350'
+          accountCurrency:
+            currencyCode: USD
+          accountStatus:
+            statusReason:
+              text: ACCOUNT_STATUS_OPEN
+          productInstanceParameters:
+            onboardingFee:
+              amount: '10'
+            monthlyFee:
+              amount: '10'
+            maintenanceFeeApplicationDay:
+              day: '1'
+        businessType: Trust
+    MaintenanceFeeApplicationDay:
+      type: object
+      properties:
+        day:
+          type: string
+          description: Day of month (1–31)
+          example: '1'
+      description: Day of the month when maintenance fees are applied
+      example:
+        day: '1'
+    MonthlyFee:
+      required:
+        - amount
+      type: object
+      properties:
+        amount:
+          type: string
+          description: Monthly fee amount
+          example: '5'
+      description: Recurring monthly fee amount
+      example:
+        amount: '5'
+    OnboardingFee:
+      required:
+        - amount
+      type: object
+      properties:
+        amount:
+          type: string
+          description: Onboarding fee amount
+          example: '10'
+      description: One-time onboarding fee amount
+      example:
+        amount: '10'
+    ProductInstanceParametersV2:
+      required:
+        - monthlyFee
+        - onboardingFee
+      type: object
+      properties:
+        onboardingFee:
+          $ref: '#/components/schemas/OnboardingFee'
+        monthlyFee:
+          $ref: '#/components/schemas/MonthlyFee'
+        maintenanceFeeApplicationDay:
+          $ref: '#/components/schemas/MaintenanceFeeApplicationDay'
+      description: Holds configurable product parameters for the account
+      example:
+        onboardingFee:
+          amount: '10'
+        monthlyFee:
+          amount: '100'
+        maintenanceFeeApplicationDay:
+          day: '1'
+    ProductInstanceReferenceV2:
+      required:
+        - accountAgreement
+      type: object
+      properties:
+        accountAgreement:
+          type: string
+          description: Agreement number or reference for the account product
+          example: '350'
+      description: Reference details for the product instance or agreement
+      example:
+        accountAgreement: '350'
+    StatusReason:
+      required:
+        - text
+      type: object
+      properties:
+        text:
+          type: string
+          description: Status code or reason for the account's current state.
+          example: ACCOUNT_STATUS_OPEN
+      description: Reason for the initial status of the account.
+      example:
+        text: ACCOUNT_STATUS_OPEN
+    ErrorObject:
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+        uri:
+          type: string
+          format: uri
+        customParams:
+          type: object
+          additionalProperties:
+            type: string
+        httpstatusCode:
+          type: integer
+          format: int32
+    ErrorResponse:
+      type: object
+      properties:
+        errorObject:
+          $ref: '#/components/schemas/ErrorObject'
+    InitiateVpAccountResponse:
+      type: object
+      properties:
+        accountDetails:
+          $ref: '#/components/schemas/VpAccountDetails'
+      description: Response returned after initiating a VP current account
+      example:
+        accountDetails:
+          customerReference: c8abee9e-b82c-4ec1-bbc6-b9b8834ffcdd
+          accountReference: 7c11c71a-0a0b-4204-ab49-a01165024e2a
+          routingInformation:
+            instrumentIdentifier: '014723699'
+            bankIdentifier: ''
+          accountLinkId: cf5ffadc-e517-4d23-97aa-431c30e4ab8a
+          accountStatus: ACCOUNT_STATUS_OPEN
+          paymentInstrumentId: a3b38917-c68b-45ec-80be-83a5e8cb620c
+    RoutingInformation:
+      type: object
+      properties:
+        instrumentIdentifier:
+          type: string
+          description: Unique identifier of the payment instrument
+          example: 46e82c6a-833b-4a45-ba68-4e616578948
+        bankIdentifier:
+          type: string
+          description: Bank identifier code (e.g., BIC or SWIFT)
+          example: HBUKA3B
+      description: Routing details used to uniquely identify the instrument within the bank
+      example: |
+        "routingInformation": {
+              "instrumentIdentifier": "46e82c6a-833b-4a45-ba68-4e616578948",
+              "bankIdentifier": "HBUKA3B"
+            }
+    VpAccountDetails:
+      type: object
+      properties:
+        customerReference:
+          type: string
+          description: Unique identifier of the customer who owns the account
+          example: c8abee9e-b82c-4ec1-bbc6-b9b8834ffcdd
+        accountReference:
+          type: string
+          description: System-generated unique account identifier
+          example: 7c11c71a-0a0b-4204-ab49-a01165024e2a
+        routingInformation:
+          $ref: '#/components/schemas/RoutingInformation'
+        accountLinkId:
+          type: string
+          description: Identifier linking this account to the related account link record
+          example: cf5ffadc-e517-4d23-97aa-431c30e4ab8a
+        accountStatus:
+          type: string
+          description: Current lifecycle status of the account
+          example: ACCOUNT_STATUS_OPEN
+        paymentInstrumentId:
+          type: string
+          description: Identifier of the default payment instrument linked to the account
+          example: a3b38917-c68b-45ec-80be-83a5e8cb620c
+      description: Comprehensive details of the account including identifiers, links, and status
+      example:
+        customerReference: c8abee9e-b82c-4ec1-bbc6-b9b8834ffcdd
+        accountReference: 7c11c71a-0a0b-4204-ab49-a01165024e2a
+        routingInformation:
+          instrumentIdentifier: '014723699'
+          bankIdentifier: ''
+        accountLinkId: cf5ffadc-e517-4d23-97aa-431c30e4ab8a
+        accountStatus: ACCOUNT_STATUS_OPEN
+        paymentInstrumentId: a3b38917-c68b-45ec-80be-83a5e8cb620c
+    InitiateAccountRequest:
+      required:
+        - accountFacility
+      type: object
+      properties:
+        accountFacility:
+          $ref: '#/components/schemas/AccountFacility'
+      description: Request object for initiating a new account for a customer
+      example:
+        accountFacility:
+          customerReference: 7587b5ee-7ff7-4e32-ab93-0a393614e15a
+          externalCustomerReference: CP0001234
+          productInstanceReference:
+            accountAgreement: '350'
+          accountCurrency:
+            currencyCode: USD
+          accountStatus:
+            statusReason:
+              text: ACCOUNT_STATUS_OPEN
+          productInstanceParameters:
+            onboardingFee:
+              amount: '10'
+            monthlyFee:
+              amount: '100'
+            maintenanceFeeApplicationDay:
+              day: '1'
+        businessType: Investment Fund
+    AccountDetails:
+      type: object
+      properties:
+        accountReference:
+          type: string
+          description: System-generated unique identifier for the newly created account
+          example: f60472d5-47fe-4f01-aacd-0388abd8ba0d
+      description: Holds the unique identifier for the created account
+    InitiateCurrentAccountResponse:
+      type: object
+      properties:
+        accountDetails:
+          $ref: '#/components/schemas/AccountDetails'
+      description: Response containing the newly created account's system reference
+      example:
+        accountDetails:
+          accountReference: f60472d5-47fe-4f01-aacd-0388abd8ba0d
+    InitiateSearchPaymentInstrumentRequest:
+      type: object
+      properties:
+        routingInformation:
+          $ref: '#/components/schemas/RoutingInformation'
+        pageSize:
+          type: string
+          description: Number of records to be retrieved per page.
+          example: '10'
+      description: Request DTO to initiate a search for payment instruments based on routing information and pagination.
+      example:
+        routingInformation:
+          instrumentIdentifier: 46e82c6a-833b-4a45-ba68-4e616578948
+          bankIdentifier: HBUKA3B
+        pageSize: '10'
+    AccountBalance:
+      type: object
+      properties:
+        amountValue:
+          type: string
+          description: Balance amount of the account. Represented as a string to preserve precision.
+          example: '211'
+      description: Represents the monetary balance of an account in its associated currency
+      example:
+        amountValue: '0'
+    AccountBalanceDate:
+      type: object
+      properties:
+        dateTimeContent:
+          type: string
+          description: Timestamp of the balance information in ISO 8601 format (UTC)
+          format: date-time
+          example: '2024-08-02T20:14:37.808587Z'
+      description: Represents the date and time when the account balance was last recorded
+      example:
+        dateTimeContent: '1970-01-01T00:00:00Z'
+    AccountClosure:
+      type: object
+      properties:
+        closureInitiated:
+          type: boolean
+          description: Indicates whether closure has been initiated
+          example: false
+        closureRequestId:
+          type: integer
+          description: Closure request identifier, if applicable
+          format: int64
+        status:
+          type: string
+          description: Closure status
+          example: 'null'
+      description: Closure information of the account
+    AccountResponseDTO:
+      type: object
+      properties:
+        accounts:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Unique account identifier
+              example: '9843219809214'
+            type:
+              type: string
+              description: Type of the account
+              example: ACCOUNT_TYPE_CUSTOMER
+            smartContractVersionId:
+              type: string
+              description: Smart contract version currently active
+              example: '73'
+            pendingSmartContractVersionId:
+              type: string
+              description: Pending smart contract version awaiting activation
+            stakeholderId:
+              type: array
+              description: Stakeholder IDs linked to this account
+              items:
+                type: string
+                description: Stakeholder IDs linked to this account
+            alias:
+              type: string
+              description: Alias name for the account, if available
+            status:
+              type: string
+              description: Account status
+              example: ACCOUNT_STATUS_OPEN
+            vaultCreateTimestamp:
+              type: string
+              description: Timestamp when account was created in Vault
+              example: '2024-11-14T10:38:35.975791Z'
+            sourceCreateTimestamp:
+              type: string
+              description: Timestamp when account was created at the source system
+              example: '2024-11-05T11:02:14.261803Z'
+            sourceOpenTimestamp:
+              type: string
+              description: Timestamp when account was opened
+              example: '2024-11-05T11:02:14.261803Z'
+            sourceCloseTimestamp:
+              type: string
+              description: Timestamp when account was closed, if applicable
+            updateTimestamp:
+              type: string
+              description: Last update timestamp for account
+              example: '2024-11-14T10:38:38.140418Z'
+            activationTimestamp:
+              type: string
+              description: Timestamp when the account became active
+              example: '2024-11-05T11:02:14.261803Z'
+            permittedDenominations:
+              type: array
+              description: Permitted denominations for transactions on this account
+              example:
+                - USD
+              items:
+                type: string
+                description: Permitted denominations for transactions on this account
+                example: '["USD"]'
+            details:
+              $ref: '#/components/schemas/Details'
+            contractUpdateTimestamp:
+              type: string
+              description: Timestamp when contract was last updated
+            processingGroupId:
+              type: string
+              description: Processing group identifier
+            trancheId:
+              type: string
+              description: Tranche ID associated with this account
+            parameterValueHierarchyNodeId:
+              type: string
+              description: Hierarchy node ID for parameter values
+            processingLabel:
+              type: string
+              description: Processing label for categorization
+            tside:
+              type: string
+          description: Metadata and configuration of the account
+          example: |
+            {
+                    "9843219809214": {
+                        "id": "9843219809214",
+                        "type": "ACCOUNT_TYPE_CUSTOMER",
+                        "smartContractVersionId": "73",
+                        "pendingSmartContractVersionId": "",
+                        "stakeholderId": [
+                            "aca3bf1c-e634-47bb-8351-d6cdf7c078d0"
+                        ],
+                        "alias": "",
+                        "status": "ACCOUNT_STATUS_OPEN",
+                        "vaultCreateTimestamp": "2024-11-14T10:38:35.975791Z",
+                        "sourceCreateTimestamp": "2024-11-05T11:02:14.261803Z",
+                        "sourceOpenTimestamp": "2024-11-05T11:02:14.261803Z",
+                        "sourceCloseTimestamp": null,
+                        "updateTimestamp": "2024-11-14T10:38:38.140418Z",
+                        "activationTimestamp": "2024-11-05T11:02:14.261803Z",
+                        "permittedDenominations": [
+                            "USD"
+                        ],
+                        "details": {
+                            "product_id": null
+                        },
+                        "contractUpdateTimestamp": null,
+                        "processingGroupId": null,
+                        "trancheId": "",
+                        "parameterValueHierarchyNodeId": "",
+                        "processingLabel": "",
+                        "tside": "T_SIDE_LIABILITY"
+                    }
+                },
+                "dormantDetails": {
+                    "dormantFlag": "N",
+                    "freezeFlag": "Y",
+                    "freezeStatus": "PREVENT_CLOSURE_CUSTOMER,FROZEN,PREVENT_CREDITS_CUSTOMER,PREVENT_UPDATES_CUSTOMER,PREVENT_DEBITS_CUSTOMER"
+                },
+                "accountBalance": {
+                    "accountId": "9843219809214",
+                    "availableBalances": {
+                        "accountBalance": {
+                            "amountValue": "10378"
+                        },
+                        "accountBalanceDate": {
+                            "dateTimeContent": "2025-05-05T12:27:39.752600Z"
+                        }
+                    },
+                    "receivableBalance": {
+                        "receivableAmount": {
+                            "amountValue": "0"
+                        }
+                    },
+                    "committedBalances": [
+                        {
+                            "accountAddress": "DEFAULT",
+                            "amount": "10378",
+                            "denomination": "USD",
+                            "dateTimeContent": "2025-05-05T12:27:39.752600Z"
+                        }
+                    ],
+                    "hasPendingAuthorization": false
+                },
+                "closureDetails": {
+                    "closureInitiated": false,
+                    "closureRequestId": null,
+                    "status": null
+                }
+        dormantDetails:
+          $ref: '#/components/schemas/DormantDetails'
+        accountBalance:
+          $ref: '#/components/schemas/OutstandingBalanceResponse'
+        closureDetails:
+          $ref: '#/components/schemas/AccountClosure'
+      description: Response object containing detailed account information, balances, and closure status
+      example:
+        accounts:
+          '9843219809214':
+            id: '9843219809214'
+            type: ACCOUNT_TYPE_CUSTOMER
+            smartContractVersionId: '73'
+            pendingSmartContractVersionId: ''
+            stakeholderId:
+              - aca3bf1c-e634-47bb-8351-d6cdf7c078d0
+            alias: ''
+            status: ACCOUNT_STATUS_OPEN
+            vaultCreateTimestamp: '2024-11-14T10:38:35.975791Z'
+            sourceCreateTimestamp: '2024-11-05T11:02:14.261803Z'
+            sourceOpenTimestamp: '2024-11-05T11:02:14.261803Z'
+            sourceCloseTimestamp: null
+            updateTimestamp: '2024-11-14T10:38:38.140418Z'
+            activationTimestamp: '2024-11-05T11:02:14.261803Z'
+            permittedDenominations:
+              - USD
+            details:
+              product_id: null
+            contractUpdateTimestamp: null
+            processingGroupId: null
+            trancheId: ''
+            parameterValueHierarchyNodeId: ''
+            processingLabel: ''
+            tside: T_SIDE_LIABILITY
+        dormantDetails:
+          dormantFlag: 'N'
+          freezeFlag: 'Y'
+          freezeStatus: PREVENT_CLOSURE_CUSTOMER,FROZEN,PREVENT_CREDITS_CUSTOMER,PREVENT_UPDATES_CUSTOMER,PREVENT_DEBITS_CUSTOMER
+        accountBalance:
+          accountId: '9843219809214'
+          availableBalances:
+            accountBalance:
+              amountValue: '10378'
+            accountBalanceDate:
+              dateTimeContent: '2025-05-05T12:27:39.752600Z'
+          receivableBalance:
+            receivableAmount:
+              amountValue: '0'
+          committedBalances:
+            - accountAddress: DEFAULT
+              amount: '10378'
+              denomination: USD
+              dateTimeContent: '2025-05-05T12:27:39.752600Z'
+          hasPendingAuthorization: false
+        closureDetails:
+          closureInitiated: false
+          closureRequestId: null
+          status: null
+    BalanceDetail:
+      type: object
+      properties:
+        accountAddress:
+          type: string
+          description: Account address type
+          example: DEFAULT
+        amount:
+          type: string
+          description: Committed balance amount
+          example: '10378'
+        denomination:
+          type: string
+          description: Currency denomination
+          example: USD
+        dateTimeContent:
+          type: string
+          description: Timestamp for committed balance entry
+          example: '2025-05-05T12:27:39.752600Z'
+      description: Details of committed balances
+    Balances:
+      type: object
+      properties:
+        accountBalance:
+          $ref: '#/components/schemas/AccountBalance'
+        accountBalanceDate:
+          $ref: '#/components/schemas/AccountBalanceDate'
+      description: Available balances and balance date
+    Details:
+      type: object
+      properties:
+        product_id:
+          type: string
+      description: Additional account details, such as product mapping
+    DormantDetails:
+      type: object
+      properties:
+        dormantFlag:
+          type: string
+          description: Dormancy flag indicator
+          example: 'N'
+        freezeFlag:
+          type: string
+          description: Freeze flag indicator
+          example: 'Y'
+        freezeStatus:
+          type: string
+          description: Comma separated freeze status codes
+          example: PREVENT_CLOSURE_CUSTOMER,FROZEN,PREVENT_CREDITS_CUSTOMER,PREVENT_UPDATES_CUSTOMER,PREVENT_DEBITS_CUSTOMER
+      description: Dormancy and freeze status details for the account
+      example: |
+        "dormantDetails": {
+                "dormantFlag": "N",
+                "freezeFlag": "Y",
+                "freezeStatus": "PREVENT_CLOSURE_CUSTOMER,FROZEN,PREVENT_CREDITS_CUSTOMER,PREVENT_UPDATES_CUSTOMER,PREVENT_DEBITS_CUSTOMER"
+            }
+    OutstandingBalanceResponse:
+      type: object
+      properties:
+        accountId:
+          type: string
+          description: Account identifier linked to balances
+          example: '9843219809214'
+        availableBalances:
+          $ref: '#/components/schemas/Balances'
+        receivableBalance:
+          $ref: '#/components/schemas/ReceivableBalance'
+        committedBalances:
+          type: array
+          items:
+            $ref: '#/components/schemas/BalanceDetail'
+        hasPendingAuthorization:
+          type: boolean
+          description: Indicates if there are pending authorizations
+          example: false
+      description: Balance information of the account
+      example: |
+        {
+                "accountId": "9843219809214",
+                "availableBalances": {
+                    "accountBalance": {
+                        "amountValue": "10378"
+                    },
+                    "accountBalanceDate": {
+                        "dateTimeContent": "2025-05-05T12:27:39.752600Z"
+                    }
+                }
+    ReceivableBalance:
+      type: object
+      properties:
+        receivableAmount:
+          $ref: '#/components/schemas/AccountBalance'
+      description: Receivable balance information
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
