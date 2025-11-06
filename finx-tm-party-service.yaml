@@ -1,0 +1,482 @@
+openapi: 3.0.1
+info:
+  title: Finx Party Service APIs
+  description: Service for managing the parties including their onboarding, status updates, and search operations.
+  version: v1
+servers:
+  - url: https://finx-demo-api.fincuro.in
+    description: API Server
+tags:
+  - name: Party
+    description: |-
+      The Party Management APIs enable end-to-end party lifecycle management in Thought Machine, including:
+                                                       
+      *Status Update API    - Modifies freeze/unfreeze status for compliance, fraud control, or operational needs.
+                                                       
+      *Party Search API     - Filters parties by status, contact details, or name with paginated results.
+                                                       
+      *Party Onboarding API - Registers new customers, counterparties, or merchants with KYC-compliant data.
+paths:
+  /Party/Search:
+    post:
+      tags:
+        - Party
+      summary: Verify existence of a party in Thought Machine
+      description: |+
+        This API enables searching and filtering parties (individuals or organizations) in the system using multiple criteria such as status,mobile phone and email.
+        It returns a paginated list of matching parties with their basic details, supporting large datasets through cursor-based pagination.
+
+      operationId: checkParty
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiateSearchRequest'
+        required: true
+      responses:
+        '200':
+          description: Successfully retrieved party
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitiateSearchResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: Party not found'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+  /Party/Initiate:
+    post:
+      tags:
+        - Party
+      summary: Create a new party record in Thought Machine
+      description: |-
+        Initiates a new party (individual or organization) in Thought Machine with complete KYC details.
+        Used for:
+        - New customer onboarding
+        - Counterparty registration
+        - Merchant/partner enrollment
+      operationId: initiateParty
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiatePartyRequest'
+        required: true
+      responses:
+        '201':
+          description: Successfully created party
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitiatePartyResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 'Unauthorized: Missing or invalid authentication token'
+          content:
+            application/json: {}
+        '403':
+          description: 'Forbidden: Insufficient permissions to access this resource'
+          content:
+            application/json: {}
+        '404':
+          description: 'Not Found: Party not found'
+          content:
+            application/json: {}
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - bearerAuth: []
+components:
+  schemas:
+    InitiateSearchRequest:
+      type: object
+      properties:
+        partyStatuses:
+          type: array
+          description: List of party statuses to filter by (e.g., CUSTOMER_STATUS_FROZEN, CUSTOMER_STATUS_FROZEN)
+          example:
+            - CUSTOMER_STATUS_ACTIVE
+            - CUSTOMER_STATUS_FROZEN
+          items:
+            type: string
+            description: List of party statuses to filter by (e.g., CUSTOMER_STATUS_FROZEN, CUSTOMER_STATUS_FROZEN)
+            example: '["CUSTOMER_STATUS_ACTIVE","CUSTOMER_STATUS_FROZEN"]'
+        partyName:
+          type: array
+          description: List of party names or legal names to search (supports partial matching)
+          example:
+            - John Doe
+            - ACME Corp
+          items:
+            type: string
+            description: List of party names or legal names to search (supports partial matching)
+            example: '["John Doe","ACME Corp"]'
+        emailAddressDescription:
+          pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+          type: array
+          description: List of email addresses associated with the party
+          example:
+            - user@example.com
+          items:
+            pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+            type: string
+            description: List of email addresses associated with the party
+            example: '["user@example.com"]'
+        mobilePhoneNumbers:
+          pattern: ^\+[1-9]\d{1,14}$
+          type: array
+          description: List of mobile phone numbers in E.164 format
+          example:
+            - '+15551234567'
+          items:
+            pattern: ^\+[1-9]\d{1,14}$
+            type: string
+            description: List of mobile phone numbers in E.164 format
+            example: '["+15551234567"]'
+        page_size:
+          type: string
+          description: 'Number of results to return per page (default: system configured limit)'
+          example: '25'
+        page_token:
+          type: string
+          description: Pagination token for retrieving the next page of results
+          example: next_page_token_123
+      description: Request object for party search operation
+      example:
+        partyStatuses:
+          - CUSTOMER_STATUS_ACTIVE
+          - CUSTOMER_STATUS_FROZEN
+        partyName:
+          - John Doe
+          - Doe Enterprises
+        emailAddressDescription:
+          - john.doe@example.com
+        mobilePhoneNumbers:
+          - '+15551234567'
+        page_size: '10'
+        page_token: next_page_token_123
+    ErrorResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: Timestamp when the error occurred in ISO-8601 format
+          example: '2023-11-20T14:30:45.123Z'
+        code:
+          type: integer
+          description: Application-specific error code
+          format: int32
+          example: 1018
+        message:
+          type: string
+          description: Human-readable error message
+          example: Party not found
+    BusinessPhoneType:
+      type: object
+      properties:
+        businessPhoneNumber:
+          type: string
+          description: Full business phone number with country code
+          example: +1-212-555-0123
+      description: Contains business phone contact information
+      example:
+        businessPhoneNumber: +1-212-555-0123
+    ElectronicAddressType:
+      required:
+        - addressDescription
+        - electronicAddressTypeValue
+      type: object
+      properties:
+        electronicAddressTypeValue:
+          type: string
+          description: Type of electronic address
+          example: IDENTIFIER_TYPE_EMAIL
+        addressDescription:
+          pattern: ^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$
+          type: string
+          description: The actual address value
+          example: john.doe@example.com
+      description: Represents an electronic contact address (email, social media, etc.) with verification metadata
+      example:
+        electronicAddressTypeValue: IDENTIFIER_TYPE_EMAIL
+        addressDescription: john.doe@example.com
+    HomePhoneType:
+      type: object
+      properties:
+        homePhoneNumber:
+          type: string
+          description: Full residential phone number with country code
+          example: '+44123456788'
+      description: Contains residential telephone contact information
+      example:
+        homePhoneNumber: +1-555-123-4567
+    InitiateSearchResponse:
+      type: object
+      properties:
+        parties:
+          type: array
+          description: List of matching party records with basic details
+          items:
+            $ref: '#/components/schemas/Parties'
+        nextPageToken:
+          type: string
+          description: Token for retrieving the next page of results (null if last page)
+          nullable: true
+          example: next_page_token_123
+        previousPageToken:
+          type: string
+          description: Token for retrieving the previous page of results (null if first page)
+          nullable: true
+          example: prev_page_token_456
+      description: Contains paginated results of party search operation with navigation tokens
+      example:
+        parties:
+          - partyReference: PRY-123456789
+            status: CUSTOMER_STATUS_ACTIVE
+            party:
+              partyName:
+                firstName: John
+                middleName: William
+                lastName: Doe
+              title: MR
+              birthDate: '1980-05-15'
+              gender: MALE
+              nationality: US
+              residence: NEW_YORK
+              taxCountry: US
+              electronicAddressType:
+                electronicAddressTypeValue: IDENTIFIER_TYPE_EMAIL
+                addressDescription: john.doe@example.com
+              partyExternalReference: EXT-ACME-12345
+        nextPageToken: next_page_token_123
+        previousPageToken: prev_page_token_456
+    MobilePhoneType:
+      type: object
+      properties:
+        mobilePhoneNumber:
+          type: string
+          description: Internationally formatted mobile number with country code
+          example: '+12025551234'
+      description: Contains validated mobile phone number information compliant with  international numbering standard
+      example:
+        mobilePhoneNumber: '+12025551234'
+    Parties:
+      type: object
+      properties:
+        partyReference:
+          type: string
+          description: Unique system-generated identifier for the party
+          example: PRY-123456789
+        status:
+          type: string
+          description: Current lifecycle status of the party
+          example: CUSTOMER_STATUS_ACTIVE
+        party:
+          $ref: '#/components/schemas/Party'
+      description: Contains complete party information including reference, status, and detailed attributes
+      example:
+        partyReference: PRY-123456789
+        status: CUSTOMER_STATUS_ACTIVE
+        party:
+          partyName:
+            firstName: John
+            middleName: William
+            lastName: Doe
+          title: MR
+          birthDate: '1980-05-15'
+          gender: MALE
+          nationality: US
+          residence: NEW_YORK
+          taxCountry: US
+          electronicAddressType:
+            electronicAddressTypeValue: IDENTIFIER_TYPE_EMAIL
+            addressDescription: john.doe@example.com
+          partyExternalReference: EXT-ACME-12345
+    Party:
+      required:
+        - partyExternalReference
+        - partyName
+      type: object
+      properties:
+        partyName:
+          $ref: '#/components/schemas/PartyName'
+        title:
+          type: string
+          description: Honorific title (e.g., MR, MRS, DR)
+          example: MR
+        birthDate:
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          type: string
+          description: Date of birth in ISO-8601 format (YYYY-MM-DD)
+          example: '1980-05-15'
+        gender:
+          type: string
+          description: Gender identity
+          example: MALE
+          enum:
+            - MALE
+            - FEMALE
+            - NON_BINARY
+            - OTHER
+        nationality:
+          pattern: ^[A-Z]{2}$
+          type: string
+          description: ISO 3166-1 alpha-2 country code
+          example: US
+        residence:
+          type: string
+          description: Primary residence location code
+          example: NEW_YORK
+        taxCountry:
+          pattern: ^[A-Z]{2}$
+          type: string
+          description: Tax residency country code (ISO 3166-1 alpha-2)
+          example: US
+        electronicAddressType:
+          $ref: '#/components/schemas/ElectronicAddressType'
+        mobilePhoneType:
+          $ref: '#/components/schemas/MobilePhoneType'
+        homePhoneType:
+          $ref: '#/components/schemas/HomePhoneType'
+        businessPhoneType:
+          $ref: '#/components/schemas/BusinessPhoneType'
+        preferredContactMethod:
+          type: string
+          description: Preferred communication channel
+          example: EMAIL
+        accessibilityMethod:
+          type: string
+          description: Accessibility requirements
+          example: CUSTOMER_ACCESSIBILITY_LARGE_PRINT
+        partyExternalReference:
+          type: string
+          description: External system reference identifier
+          example: EXT-ACME-12345
+      description: Represents a legal entity or individual with comprehensive demographic and contact information
+      example:
+        partyName:
+          firstName: John
+          middleName: William
+          lastName: Doe
+        title: MR
+        birthDate: '1980-05-15'
+        gender: MALE
+        nationality: US
+        residence: NEW_YORK
+        taxCountry: US
+        electronicAddressType:
+          electronicAddressTypeValue: IDENTIFIER_TYPE_EMAIL
+          addressDescription: john.doe@example.com
+        partyExternalReference: EXT-ACME-12345
+    PartyName:
+      required:
+        - firstName
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: Legal first/given name of the party
+          example: John
+        middleName:
+          type: string
+          description: Middle name or additional given names
+          example: William
+        lastName:
+          type: string
+          description: Legal last name/family name/surname
+          example: Doe
+      description: Represents the legal name components of a party (individual or organization)
+      example:
+        firstName: John
+        middleName: William
+        lastName: Doe
+    InitiatePartyRequest:
+      required:
+        - party
+      type: object
+      properties:
+        party:
+          $ref: '#/components/schemas/Party'
+      description: Request payload for initiating a new party in the system
+      example:
+        party:
+          partyName:
+            firstName: John
+            middleName: Red
+            lastName: Smith
+          title: CUSTOMER_TITLE_MR
+          birthDate: '1998-12-25'
+          gender: CUSTOMER_GENDER_MALE
+          nationality: UK
+          residence: UK
+          taxCountry: UK
+          electronicAddressType:
+            electronicAddressTypeValue: IDENTIFIER_TYPE_EMAIL
+            addressDescription: john.smith@fincuro.in
+          mobilePhoneType:
+            mobilePhoneNumber: '+44123456710'
+          homePhoneType:
+            homePhoneNumber: '+44123456788'
+          businessPhoneType:
+            businessPhoneNumber: '+44123456788'
+          preferredContactMethod: CUSTOMER_CONTACT_METHOD_EMAIL
+          accessibilityMethod: CUSTOMER_ACCESSIBILITY_LARGE_PRINT_P
+          partyExternalReference: CP87545510
+    InitiatePartyResponse:
+      type: object
+      properties:
+        partyReference:
+          type: string
+          description: System-generated unique identifier for the new party
+          example: PRY-2023-876543
+        status:
+          type: string
+          description: Initial lifecycle status of the party
+          example: CUSTOMER_STATUS_ACTIVE
+        party:
+          $ref: '#/components/schemas/Party'
+      description: Response containing the newly created party's system reference and status
+      example:
+        partyReference: PRY-2023-876543
+        status: PENDING_VERIFICATION
+        party:
+          partyName:
+            firstName: John
+            lastName: Doe
+          partyExternalReference: CUST-12345
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
