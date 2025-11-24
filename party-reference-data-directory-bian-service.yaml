@@ -504,7 +504,7 @@ components:
           type: boolean
           format: string
       description: Dedup response
-    text:
+    Text:
       type: object
       properties:
         Text:
@@ -512,7 +512,7 @@ components:
           description: Text is a character string such as a finite set of characters generally in the form of words of a language. (UN/CEFACT)
           format: datatype
       description: A bank defined classification of the socio-economic rating and prospect
-    name:
+    Name:
       type: object
       properties:
         Name:
@@ -520,13 +520,13 @@ components:
           description: 'A name is a word or phrase that constitutes the distinctive designation of a person, place, thing or concept. (UN/CEFAT)'
           format: datatype
       description: "Name by which a party is known and which is usually used to identify that party. (ISO20022)\n"
-    partytypevalues:
+    PartyTypeValues:
       enum:
         - Person
         - Organisation
       type: string
       description: ' OBExternalPartyType1Code| ()|Standard|UK Open Banking ()'
-    datetimetypevalues:
+    DateTimeTypeValues:
       enum:
         - MaturityDate
         - InitiatedDate
@@ -550,19 +550,19 @@ components:
         - FulfillmentDate
       type: string
       description: ">\r\n* `MaturityDate` - \r\n* `InitiatedDate` - \r\n* `RequestedDate` - \r\n* `ExecutedDate` - \r\n* `OpenDate` - \r\n* `CloseDate` - \r\n* `ExpiryDate` - \r\n* `EffectiveDate` - \r\n* `CreatingDate` - \r\n* `ActivationDate` - \r\n* `DeactivationDate` - \r\n* `BlockingDate` - \r\n* `SendingDate` - \r\n* `ValidFromDate` - \r\n* `ValidToDate` - \r\n* `ReceivingDate` - \r\n* `SigningDate` - \r\n* `DueDate` - \r\n* `ValueDate` - \r\n* `FulfillmentDate` - \r\n"
-    datetime:
+    DateTime:
       type: object
       properties:
         DateTimeContent:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         TimeZoneCode:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         DaylightSavingIndicator:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         DateTimeType:
-          $ref: '#/components/schemas/datetimetypevalues'
+          $ref: '#/components/schemas/DateTimeTypeValues'
       description: Value of the date type ISODateTime|ISODateTime (https://www.iso20022.org/standardsrepository/type/ISODateTime)|Standard|ISO20022 BM ()
-    partyidentificationtypevalues:
+    PartyIdentificationTypeValues:
       enum:
         - Taxidentificationnumber
         - Nationalregistrationnumber
@@ -580,7 +580,7 @@ components:
         - Nationalregistrationidentificationnumber
       type: string
       description: ">\r\n* `Taxidentificationnumber` - Number assigned by a tax authority to an entity.\r\n* `Nationalregistrationnumber` - Number assigned by a national registration authority to an entity. In Singapore this is known as the NRIC. (ISO20022)\r\n* `Registrationauthorityidentification` - An identifier for the Legal Entity in a business registry in the jurisdiction of legal registration, or in the appropriate registration authority. (ISO20022)\r\n* `LEI(LegalEntityIdentifier)` - \r\n* `Alienregistrationnumber` - Number assigned by a government agency to identify foreign nationals.\r\n* `Passportnumber` - Number assigned by a passport authority.\r\n* `Taxexemptidentificationnumber` - Number assigned to a tax exempt entity.\r\n* `Corporateidentification` - Number assigned to a corporate entity.\r\n* `Driverlicensenumber` - Number assigned to a driver's license.\r\n* `Foreigninvestmentidentitynumber` - Number assigned to a foreign investor (other than the alien number).\r\n* `Socialsecuritynumber` - Number assigned by a social security agency.\r\n* `Identitycardnumber` - Number assigned by a national authority to an identity card.\r\n* `Concat` - Number assigned by an issuer to identify a customer via the concatenation of the birthdate and characters of the first name and surname.\r\n* `Nationalregistrationidentificationnumber` - National registration identification number. In Singapore this is known as the NRIC.\r\n"
-    value:
+    Value:
       type: object
       properties:
         Value:
@@ -588,27 +588,27 @@ components:
           description: "Data or set of data \n\n- A value is the concept of worth in general that is assigned or is determined by measurement, assessment or calculation. (UN/CEFACT)"
           format: datatype
       description: ''
-    identifier:
+    Identifier:
       type: object
       properties:
         IdentifierValue:
-          $ref: '#/components/schemas/value'
+          $ref: '#/components/schemas/Value'
         IdentifierIssuingAuthority:
-          $ref: '#/components/schemas/involvedparty'
+          $ref: '#/components/schemas/InvolvedParty'
         IdentifierStartDate:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
         IdentifierEndDate:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
       description: ''
-    partyidentification:
+    PartyIdentification:
       type: object
       properties:
         PartyIdentificationType:
-          $ref: '#/components/schemas/partyidentificationtypevalues'
+          $ref: '#/components/schemas/PartyIdentificationTypeValues'
         PartyIdentification:
-          $ref: '#/components/schemas/identifier'
+          $ref: '#/components/schemas/Identifier'
       description: ''
-    partylegalstructuretypevalues:
+    PartyLegalStructureTypeValues:
       enum:
         - Individual
         - CommunityInterestCompany
@@ -624,29 +624,29 @@ components:
         - Sole(SoleTrader)
       type: string
       description: ">\r\n* `Individual` - \r\n* `CommunityInterestCompany` - \r\n* `CharitableIncorporatedOrganisation` - \r\n* `Co-Operative` - \r\n* `Charity` - \r\n* `GeneralPartnership` - \r\n* `LimitedLiabilityPartnership` - \r\n* `ScottishLimitedPartnership` - \r\n* `LimitedPartnership` - \r\n* `PrivateLimitedCompany` - \r\n* `PublicLimitedCompany` - \r\n* `Sole(SoleTrader)` - \r\n"
-    party:
+    Party:
       type: object
       properties:
         PartyName:
-          $ref: '#/components/schemas/name'
+          $ref: '#/components/schemas/Name'
         PartyType:
-          $ref: '#/components/schemas/partytypevalues'
+          $ref: '#/components/schemas/PartyTypeValues'
         PartyDateTime:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
         PartyIdentification:
-          $ref: '#/components/schemas/partyidentification'
+          $ref: '#/components/schemas/PartyIdentification'
         PartyLegalStructureType:
-          $ref: '#/components/schemas/partylegalstructuretypevalues'
+          $ref: '#/components/schemas/PartyLegalStructureTypeValues'
       description: Reference to the associated customer (can currently be a person or a company) Party|Party (https://www.iso20022.org/standardsrepository/type/Party)|Standard|ISO20022BM ()
-    datetimeperiod:
+    DateTimePeriod:
       type: object
       properties:
         FromDateTime:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
         ToDateTime:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
       description: ''
-    partyinvolvementtypevalues:
+    PartyInvolvementTypeValues:
       enum:
         - Agreementinvolvement
         - Partyinvolvement
@@ -657,43 +657,43 @@ components:
         - Bankguaranteeinvolvement
       type: string
       description: ">\r\n* `Agreementinvolvement` - \r\n* `Partyinvolvement` - \r\n* `Arrangementinvolvement` - \r\n* `Designspecificationinvolvement` - \r\n* `Relationshipinvolvement` - \r\n* `Locationinvolvement` - \r\n* `Bankguaranteeinvolvement` - \r\n"
-    partyrole:
+    PartyRole:
       type: object
       properties:
         PartyRoleType:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         PartyRoleName:
-          $ref: '#/components/schemas/name'
+          $ref: '#/components/schemas/Name'
         PartyRoleValidityPeriod:
-          $ref: '#/components/schemas/datetimeperiod'
+          $ref: '#/components/schemas/DateTimePeriod'
         PartyInvolvementType:
-          $ref: '#/components/schemas/partyinvolvementtypevalues'
+          $ref: '#/components/schemas/PartyInvolvementTypeValues'
       description: ''
-    involvedparty:
+    InvolvedParty:
       type: object
       properties:
         PartyReference:
-          $ref: '#/components/schemas/party'
+          $ref: '#/components/schemas/Party'
         PartyInvolvement:
-          $ref: '#/components/schemas/partyrole'
+          $ref: '#/components/schemas/PartyRole'
       description: Reference to the customer's employer (company name)
     Demographics:
       type: object
       properties:
-        Socio-EconomicClassification:
-          $ref: '#/components/schemas/text'
+        SocioEconomicClassification:
+          $ref: '#/components/schemas/Text'
         EthnicityReligion:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         Employment:
-          $ref: '#/components/schemas/involvedparty'
+          $ref: '#/components/schemas/InvolvedParty'
         EmploymentHistory:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         EducationHistory:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         ServicingConstraints:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
       description: "\"An assertion or statement with regard to a concept, a characteristic.\n\nExamples: Product pricing rules, Customer reference details\n\nA descriptor can be atomic or composed.\"\nProspect Management"
-    financialdocumenttypevalues:
+    FinancialDocumentTypeValues:
       enum:
         - Meteredserviceinvoice
         - Creditnoterelatedtofinancialadjustment
@@ -721,19 +721,19 @@ components:
         - Salereceipt
       type: string
       description: ">\r\n* `Meteredserviceinvoice` - Document is an invoice claiming payment for the supply of metered services, for example gas or electricity supplied to a fixed meter.\r\n* `Creditnoterelatedtofinancialadjustment` - Document is a credit note for the final amount settled for a commercial transaction.\r\n* `Debitnoterelatedtofinancialadjustment` - Document is a debit note for the final amount settled for a commercial transaction.\r\n* `Commercialinvoice` - Document is an invoice.\r\n* `Creditnote` - Document is a credit note.\r\n* `Debitnote` - Document is a debit note.\r\n* `Hireinvoice` - Document is an invoice for the hiring of human resources or renting goods or equipment.\r\n* `Selfbilledinvoice` - Document is an invoice issued by the debtor.\r\n* `Remittanceadvicemessage` - Document is a remittance advice sent separately from the current transaction.\r\n* `Relatedpaymentinstruction` - Document is a linked payment instruction to which the current payment instruction is related, for example, in a cover scenario.\r\n* `Commercialcontract` - Document is an agreement between the parties, stipulating the terms and conditions of the delivery of goods or services.\r\n* `Foreignexchangedealreference` - Document is a pre-agreed or pre-arranged foreign exchange transaction to which the payment transaction refers.\r\n* `Statementofaccount` - Document is a statement of the transactions posted to the debtor's account at the supplier.\r\n* `Dispatchadvice` - Document is a dispatch advice.\r\n* `Purchaseorder` - Document is a purchase order.\r\n* `Structuredcommunicationreference` - Document is a structured communication reference provided by the creditor to identify the referred transaction.\r\n* `Billoflading` - Document is a shipping notice.\r\n* `Voucher` - Document is an electronic payment document.\r\n* `Accountreceivableopenitem` - Document is a payment that applies to a specific source document.\r\n* `Tradeservicesutilitytransaction` - Document is a transaction identifier as assigned by the Trade Services Utility.\r\n* `Cashierreceipt` - When the Sale system print the Cashier copy of the Payment receipt.\r\n* `Customerreceipt` - When the Sale System requires   the POI system to print the Customer receipt.\r\n* `Journal` - When the POI or the Sale System wants to store a message on the journal printer or electronic journal of the Sale Terminal (it is sometimes a Sale Logging/Journal Printer).\r\n* `Salereceipt` - When the Sale System requires the POI system to print the Sale receipt.\r\n"
-    status:
+    Status:
       type: object
       properties:
         StatusReason:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         StatusDateTime:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
         StatusValidityPeriod:
-          $ref: '#/components/schemas/datetimeperiod'
+          $ref: '#/components/schemas/DateTimePeriod'
         StatusInvolvedParty:
-          $ref: '#/components/schemas/involvedparty'
+          $ref: '#/components/schemas/InvolvedParty'
       description: 'Status of the document (e.g. delivered, paid, etc.). ISO20022'
-    documentdatetimetypevalues:
+    DocumentDateTimeTypeValues:
       enum:
         - CreationDate
         - CapturingDate
@@ -742,54 +742,54 @@ components:
         - IssueDate
       type: string
       description: ">\r\n* `CreationDate` - \r\n* `CapturingDate` - \r\n* `VersionDate` - \r\n* `ValueDate` - \r\n* `IssueDate` - \r\n"
-    document:
+    Document:
       type: object
       properties:
         DocumentIdentification:
-          $ref: '#/components/schemas/identifier'
+          $ref: '#/components/schemas/Identifier'
         DocumentVersion:
           type: string
           description: ''
           format: number
         DocumentType:
-          $ref: '#/components/schemas/financialdocumenttypevalues'
+          $ref: '#/components/schemas/FinancialDocumentTypeValues'
         DocumentStatus:
-          $ref: '#/components/schemas/status'
+          $ref: '#/components/schemas/Status'
         DocumentDateTime:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
         DocumentName:
-          $ref: '#/components/schemas/name'
+          $ref: '#/components/schemas/Name'
         DocumentDateTimeType:
-          $ref: '#/components/schemas/documentdatetimetypevalues'
+          $ref: '#/components/schemas/DocumentDateTimeTypeValues'
         DocumentPurpose:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         DocumentFormat:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         DocumentSubject:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         DocumentDescription:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         DocumentValidityPeriod:
-          $ref: '#/components/schemas/datetimeperiod'
+          $ref: '#/components/schemas/DateTimePeriod'
       description: ''
-    partydocumenttypevalues:
+    PartyDocumentTypeValues:
       enum:
         - WorkDocument
         - CertificationDocument
         - PersonalDocument
       type: string
       description: ">\r\n* `WorkDocument` - \r\n* `CertificationDocument` - \r\n* `PersonalDocument` - \r\n"
-    partydocument:
+    PartyDocument:
       type: object
       properties:
         PartyReference:
-          $ref: '#/components/schemas/party'
+          $ref: '#/components/schemas/Party'
         DocumentReference:
-          $ref: '#/components/schemas/document'
+          $ref: '#/components/schemas/Document'
         PartyDocumentType:
-          $ref: '#/components/schemas/partydocumenttypevalues'
+          $ref: '#/components/schemas/PartyDocumentTypeValues'
       description: Details about and extracted from government issued documents (e.g. driving license/passport details)
-    documentdirectoryentry:
+    DocumentDirectoryEntry:
       type: object
       properties:
         DocumentDirectoryEntryIdentification:
@@ -797,13 +797,13 @@ components:
           description: Identification allowing the retrieval of a document from a Document Directory
           format: string
       description: The document reference for associated documents
-    country:
+    Country:
       type: object
       properties:
         NationalRegulatoryAuthority:
-          $ref: '#/components/schemas/involvedparty'
+          $ref: '#/components/schemas/InvolvedParty'
       description: The customer nationality and history as appropriate
-    postaladdresstypevalues:
+    PostalAddressTypeValues:
       enum:
         - Business
         - Correspondence
@@ -815,7 +815,7 @@ components:
         - Statement
       type: string
       description: ">\r\n* `Business` - \r\n* `Correspondence` - \r\n* `Deliveryto` - \r\n* `Mailto` - \r\n* `Pobox` - \r\n* `Postal` - \r\n* `Residential` - \r\n* `Statement` - \r\n"
-    geographicalareatypevalues:
+    GeographicalAreaTypeValues:
       enum:
         - Continent
         - Country
@@ -827,33 +827,33 @@ components:
         - Region
       type: string
       description: ">\r\n* `Continent` - \r\n* `Country` - \r\n* `State` - \r\n* `District` - \r\n* `Province` - \r\n* `Town` - \r\n* `City` - \r\n* `Region` - \r\n"
-    postaladdress:
+    PostalAddress:
       type: object
       properties:
         AddressType:
-          $ref: '#/components/schemas/postaladdresstypevalues'
+          $ref: '#/components/schemas/PostalAddressTypeValues'
         AddressLine:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         StreetName:
-          $ref: '#/components/schemas/name'
+          $ref: '#/components/schemas/Name'
         BuildingNumber:
           type: string
           description: Number that identifies the position of a building on a street.
           format: number
         PostCode:
-          $ref: '#/components/schemas/identifier'
+          $ref: '#/components/schemas/Identifier'
         TownName:
-          $ref: '#/components/schemas/name'
+          $ref: '#/components/schemas/Name'
         CountrySubDivision:
-          $ref: '#/components/schemas/geographicalareatypevalues'
+          $ref: '#/components/schemas/GeographicalAreaTypeValues'
         Country:
-          $ref: '#/components/schemas/country'
+          $ref: '#/components/schemas/Country'
         Department:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         SubDepartment:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
       description: Their given residential address
-    contactpointtypevalues:
+    ContactPointTypeValues:
       enum:
         - ElectronicAddress
         - PostalAddress
@@ -861,13 +861,13 @@ components:
         - Socialnetworkaddress
       type: string
       description: ">\r\n* `ElectronicAddress` - Address which is accessed by electronic means. ISO20022\r\n* `PostalAddress` - Information that locates and identifies a specific address. ISO20022\r\n* `PhoneNumber` - Collection of information that identifies a phone address. ISO20022\r\n* `Socialnetworkaddress` - A social network such as Facebook, Twitter, etc.\r\n"
-    contactpoint:
+    ContactPoint:
       type: object
       properties:
         ContactPointType:
-          $ref: '#/components/schemas/contactpointtypevalues'
+          $ref: '#/components/schemas/ContactPointTypeValues'
       description: The given email address
-    politicalexposuretypevalues:
+    PoliticalExposureTypeValues:
       enum:
         - Politicalexposureforeign
         - Politicalexposuredomestic
@@ -878,55 +878,55 @@ components:
       type: object
       properties:
         PartyLegalEntityReference:
-          $ref: '#/components/schemas/party'
+          $ref: '#/components/schemas/Party'
         PartyNameSalutation:
-          $ref: '#/components/schemas/name'
+          $ref: '#/components/schemas/Name'
         GovernmentIssuedIdentityReference:
-          $ref: '#/components/schemas/partyidentification'
+          $ref: '#/components/schemas/PartyIdentification'
         GovernmentIssuedDocumentDetails:
-          $ref: '#/components/schemas/partydocument'
+          $ref: '#/components/schemas/PartyDocument'
         DocumentDirectoryEntryInstanceReference:
-          $ref: '#/components/schemas/documentdirectoryentry'
+          $ref: '#/components/schemas/DocumentDirectoryEntry'
         ResidencyStatus:
-          $ref: '#/components/schemas/status'
+          $ref: '#/components/schemas/Status'
         DateofBirth:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
         Nationality:
-          $ref: '#/components/schemas/country'
+          $ref: '#/components/schemas/Country'
         ResidentialAddress:
-          $ref: '#/components/schemas/postaladdress'
+          $ref: '#/components/schemas/PostalAddress'
         eMailAddress:
-          $ref: '#/components/schemas/contactpoint'
+          $ref: '#/components/schemas/ContactPoint'
         CellPhoneNumber:
-          $ref: '#/components/schemas/contactpoint'
+          $ref: '#/components/schemas/ContactPoint'
         SocialNetworkContacts:
-          $ref: '#/components/schemas/contactpoint'
+          $ref: '#/components/schemas/ContactPoint'
         PoliticalExposureType:
-          $ref: '#/components/schemas/politicalexposuretypevalues'
+          $ref: '#/components/schemas/PoliticalExposureTypeValues'
         PoliticalExposureDescriptionRecord:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         CorporateCustomerReference:
-          $ref: '#/components/schemas/involvedparty'
+          $ref: '#/components/schemas/InvolvedParty'
         CorporateCustomerLegalEntityReference:
-          $ref: '#/components/schemas/involvedparty'
+          $ref: '#/components/schemas/InvolvedParty'
         CorporateAddress:
-          $ref: '#/components/schemas/postaladdress'
+          $ref: '#/components/schemas/PostalAddress'
         CompanyOfficerReference:
-          $ref: '#/components/schemas/involvedparty'
+          $ref: '#/components/schemas/InvolvedParty'
         CompanyOfficerRole:
-          $ref: '#/components/schemas/partyrole'
+          $ref: '#/components/schemas/PartyRole'
         CustomerSinceDate:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
         PartyFullLegalName:
-          $ref: '#/components/schemas/name'
+          $ref: '#/components/schemas/Name'
         PartyLegalStructure:
-          $ref: '#/components/schemas/partylegalstructuretypevalues'
+          $ref: '#/components/schemas/PartyLegalStructureTypeValues'
         PartyAddress:
-          $ref: '#/components/schemas/postaladdress'
+          $ref: '#/components/schemas/PostalAddress'
         PartyCountryOfResidence:
-          $ref: '#/components/schemas/country'
+          $ref: '#/components/schemas/Country'
       description: "\"An assertion or statement with regard to a concept, a characteristic.\n\nExamples: Product pricing rules, Customer reference details\n\nA descriptor can be atomic or composed.\"\nProspect Management"
-    party_partyrelationshiptypevalues:
+    PartyPartyRelationshipTypeValues:
       enum:
         - PartyIsParentOfParty
         - PartyIsSubsidiaryOfParty
@@ -939,7 +939,7 @@ components:
         - PartyReceivesBenefitsFromAParty
       type: string
       description: ">\r\n* `PartyIsParentOfParty` - \r\n* `PartyIsSubsidiaryOfParty` - \r\n* `PartyIsCertifiedByParty` - \r\n* `PartyIsMarriedToParty` - \r\n* `PartyActsOnBehalfOfParty` - \r\n* `PartyIsContactPointForParty` - \r\n* `PartyIsTrustedByParty` - \r\n* `PartyIsThePowerOfAttorneyForParty` - \r\n* `PartyReceivesBenefitsFromAParty` - \r\n"
-    subject:
+    Subject:
       type: object
       properties:
         Subject:
@@ -947,7 +947,7 @@ components:
           description: A thing that is discussed or dealt whit in agreement/arrangement about doing or not doing (as action) something.
           format: class
       description: ''
-    arrangementtypevalues:
+    ArrangementTypeValues:
       enum:
         - SweepArrangement
         - WithdrawalArrangement
@@ -979,7 +979,7 @@ components:
         - MaturityArrangement
       type: string
       description: ">\r\n* `SweepArrangement` - An arrangement into which is promised for the set-up and execution of structured sweeps to and from the facility to a linked account.\r\n* `WithdrawalArrangement` - An arrangement into which is promised to deliver Withdraw Service  to take fund out of an account. \r\n* `DepositArrangement` - An arrangement into which is promised to deliver Deposit Service  to place funds into an account for safekeeping. \r\n* `InterestArrangement` - An arrangement into which is promised to apply a pricing element expressed in a percentage  to a principal amount.\r\n* `FeeArrangement` - An arrangement into which is promised to apply a charge for services rendered. \r\n* `LienArrangement` - An arrangement into which is promised for placing a lien or block on the account for a specified purpose, amount, and period. \r\n* `InformationArrangement` - An arrangement concerning the information the bank will provide about the agreement/account\r\n* `PaymentArrangement` - An arrangement into which is promised to deliver a specific payment service including regular payments, standing orders, direct debits and bill pay instructions. \r\n* `EntitlementArrangement` - Right or obligation linked to the involvement of a party in an agreement\r\n* `PeriodArrangement` - \r\n* `CollateralArrangement` - An arrangement into which is promised for handling the oversight of the allocation, valuation and administration of collateral associated with the facility. \r\n* `LimitArrangement` - An arrangement to limit something\ne.g., the number of transaction per week, the amount of money allowed to withdraw per week/day and etc. \r\n* `AccessArrangement` - An arrangement that allows or restricts the access to a service or product, channel or device through a specific access point\r\n* `CardPaymentArrangement` - An arrangement into which is promised to deliver Card payment Service to execute payment transactions through a payment card, including online payments. \r\n* `StandingOrderArrangement` - An arrangement into which is promised to deliver Standing Order Service to make regular transfers on given dates to a named beneﬁciary. \r\n* `OverdraftArrangement` - An arrangement into which is promised to deliver Overdraft Service  that allows fund transfer even if there is no provision on the account. \r\n* `RepaymentArrangement` - An arrangement into which is promised for paying back money previously borrowed from a lender. \r\n* `StatementArrangement` - An arrangement into which is promised to deliver a reporting service on payment transactions registered on an account. \r\n* `CreditTransferArrangement` - An arrangement into which is promised to allow a payer to transfer fund to a beneficiary. \r\n* `ProductAndServiceArrangement` - \r\n* `FactoringArrangement` - \r\n* `RolloverArrangement` - Arrangement stipulating the modalities for an automatic renewal of the agreement\n\ni.e. the replacement of the agreement with a new one without renewed negociation and witout explicit agreement of the customer \r\n* `RestructuringArrangement` - \r\n* `InsuranceArrangement` - \r\n* `CollectionArrangement` - An arrangement into which is promised to collect past-due debts from borrowers\r\n* `UnderwritingArrangement` - A contractual agreement between parties that commits the underwriter to assuming risk.\r\n* `TerminationArrangement` - \r\n* `MaturityArrangement` - \r\n"
-    modalitytypevalues:
+    ModalityTypeValues:
       enum:
         - AllocationModality
         - CalculationModality
@@ -990,25 +990,25 @@ components:
         - DeliveryModality
       type: string
       description: ">\r\n* `AllocationModality` - \r\n* `CalculationModality` - \r\n* `DerivationModality` - \r\n* `PaymentModality` - \r\n* `ProcessingModality` - \r\n* `ApplicationModality` - \r\n* `DeliveryModality` - \r\n"
-    servicearrangementmodality:
+    ServiceArrangementModality:
       type: object
       properties:
         ServiceArrangementModalityType:
-          $ref: '#/components/schemas/modalitytypevalues'
+          $ref: '#/components/schemas/ModalityTypeValues'
       description: ''
-    partyobligationorentitlement:
+    PartyObligationOrEntitlement:
       type: object
       properties:
         ObligationOrEntitlementSubject:
-          $ref: '#/components/schemas/subject'
+          $ref: '#/components/schemas/Subject'
         ObligationOrEntitlementType:
-          $ref: '#/components/schemas/arrangementtypevalues'
+          $ref: '#/components/schemas/ArrangementTypeValues'
         ObligationOrEntitlementModality:
-          $ref: '#/components/schemas/servicearrangementmodality'
+          $ref: '#/components/schemas/ServiceArrangementModality'
         ObligationOrEntitlementDefinition:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
       description: Description of the rights or obligations granted to the associate
-    productagreementtypevalues:
+    ProductAgreementTypeValues:
       enum:
         - CurrentAccountAgreement
         - SavingsAccountAgreement
@@ -1019,23 +1019,23 @@ components:
         - TermDepositAgreement
       type: string
       description: ">\r\n* `CurrentAccountAgreement` - \r\n* `SavingsAccountAgreement` - \r\n* `BrokeredProductAgreement` - \r\n* `ConsumerLoanAgreement` - \r\n* `MortgageLoanAgreement` - \r\n* `DirectDebitServiceAgreement` - \r\n* `TermDepositAgreement` - \r\n"
-    productagreement:
+    ProductAgreement:
       type: object
       properties:
         ProductAgreementType:
-          $ref: '#/components/schemas/productagreementtypevalues'
+          $ref: '#/components/schemas/ProductAgreementTypeValues'
       description: Reference to a product or service where the association is linked in some manner (e.g. guarantor)
-    party_partyrelationship:
+    PartyPartyRelationship:
       type: object
       properties:
         RelationshipType:
-          $ref: '#/components/schemas/party_partyrelationshiptypevalues'
+          $ref: '#/components/schemas/PartyPartyRelationshipTypeValues'
         FromParty:
-          $ref: '#/components/schemas/party'
+          $ref: '#/components/schemas/Party'
         ToParty:
-          $ref: '#/components/schemas/party'
+          $ref: '#/components/schemas/Party'
       description: Reference to individuals with specific representation rights (e.g. a lawyer with power of attorney)
-    productserviceagreementinvolvementtypevalues:
+    ProductServiceAgreementInvolvementTypeValues:
       enum:
         - Principal
         - SecondaryOwner
@@ -1053,65 +1053,65 @@ components:
         - RegisteredShareholderName
       type: string
       description: ">\r\n* `Principal` - \r\n* `SecondaryOwner` - \r\n* `Beneficiary` - \r\n* `PowerOfAttorney` - \r\n* `LegalGuardian` - \r\n* `CustodianForMinor` - \r\n* `SuccessorOnDeath` - \r\n* `Administrator` - \r\n* `OtherParty` - \r\n* `Granter` - \r\n* `Settlor` - \r\n* `SeniorManagingOfficial` - \r\n* `Protector` - \r\n* `RegisteredShareholderName` - \r\n"
-    productagreementinvolvement:
+    ProductAgreementInvolvement:
       type: object
       properties:
         InvolvementType:
-          $ref: '#/components/schemas/productserviceagreementinvolvementtypevalues'
+          $ref: '#/components/schemas/ProductServiceAgreementInvolvementTypeValues'
         PartyReference:
-          $ref: '#/components/schemas/party'
+          $ref: '#/components/schemas/Party'
         AgreementReference:
-          $ref: '#/components/schemas/productagreement'
+          $ref: '#/components/schemas/ProductAgreement'
       description: ''
     Associations:
       type: object
       properties:
         EmployeeReference:
-          $ref: '#/components/schemas/involvedparty'
+          $ref: '#/components/schemas/InvolvedParty'
         AssociateReference:
-          $ref: '#/components/schemas/involvedparty'
+          $ref: '#/components/schemas/InvolvedParty'
         AssociateType:
-          $ref: '#/components/schemas/party_partyrelationshiptypevalues'
+          $ref: '#/components/schemas/PartyPartyRelationshipTypeValues'
         AssociateObligationorDependencyDescription:
-          $ref: '#/components/schemas/partyobligationorentitlement'
+          $ref: '#/components/schemas/PartyObligationOrEntitlement'
         AssociationValidFromToDate:
-          $ref: '#/components/schemas/datetimeperiod'
+          $ref: '#/components/schemas/DateTimePeriod'
         ProductInstanceReference:
-          $ref: '#/components/schemas/productagreement'
+          $ref: '#/components/schemas/ProductAgreement'
         PreferredBeneficiary:
-          $ref: '#/components/schemas/involvedparty'
+          $ref: '#/components/schemas/InvolvedParty'
         ProxyRepresentativePowerofAttorneyReference:
-          $ref: '#/components/schemas/party_partyrelationship'
+          $ref: '#/components/schemas/PartyPartyRelationship'
         ProductInstanseInvolvementReference:
-          $ref: '#/components/schemas/productagreementinvolvement'
+          $ref: '#/components/schemas/ProductAgreementInvolvement'
       description: "\"An assertion or statement with regard to a concept, a characteristic.\n\nExamples: Product pricing rules, Customer reference details\n\nA descriptor can be atomic or composed.\"\nProspect Management"
-    partyrelationship:
+    PartyRelationship:
       type: object
       properties:
         RelationshipType:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         RelationshipValidityPeriod:
-          $ref: '#/components/schemas/datetimeperiod'
+          $ref: '#/components/schemas/DateTimePeriod'
         RelationshipStartDate:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
         RelationshipEndDate:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
         RelationshipLifecycleStatus:
-          $ref: '#/components/schemas/status'
+          $ref: '#/components/schemas/Status'
         RelationshipIdentification:
-          $ref: '#/components/schemas/identifier'
+          $ref: '#/components/schemas/Identifier'
       description: ''
     BankRelations:
       type: object
       properties:
         BankRelationType:
-          $ref: '#/components/schemas/text'
+          $ref: '#/components/schemas/Text'
         BusinessUnitEmployeeReference:
-          $ref: '#/components/schemas/involvedparty'
+          $ref: '#/components/schemas/InvolvedParty'
         BankRelationReference:
-          $ref: '#/components/schemas/partyrelationship'
+          $ref: '#/components/schemas/PartyRelationship'
       description: "\"An assertion or statement with regard to a concept, a characteristic.\n\nExamples: Product pricing rules, Customer reference details\n\nA descriptor can be atomic or composed.\"\nProspect Management"
-    directoryentrydatetypevalues:
+    DirectoryEntryDateTypeValues:
       enum:
         - OpenDate
         - RefreshDate
@@ -1121,13 +1121,13 @@ components:
       type: object
       properties:
         PartyReference:
-          $ref: '#/components/schemas/party'
+          $ref: '#/components/schemas/Party'
         DirectoryEntryDateType:
-          $ref: '#/components/schemas/directoryentrydatetypevalues'
+          $ref: '#/components/schemas/DirectoryEntryDateTypeValues'
         DirectoryEntryDate:
-          $ref: '#/components/schemas/datetime'
+          $ref: '#/components/schemas/DateTime'
         PartyType:
-          $ref: '#/components/schemas/partytypevalues'
+          $ref: '#/components/schemas/PartyTypeValues'
       description: Capture and maintain reference information about some type of entitity within Party Reference Data Directory.
   responses:
     BadRequest:
