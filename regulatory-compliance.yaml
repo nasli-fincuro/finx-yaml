@@ -1,0 +1,731 @@
+openapi: 3.0.1
+info:
+  title: Regulatory Compliance
+  description: 'This service domain provides a service to interpret regulatory requirements, provide guidance and define and implement a portfolio of regulatory compliance tests across all appropriate bank activities'
+  contact:
+    name: BIAN
+    url: https://bian.org
+  version: 13.0.0
+servers:
+  - url: https://virtserver.swaggerhub.com/B154/BIAN/RegulatoryCompliance/13.0.0
+paths:
+  /regulatory-compliance/evaluate:
+    post:
+      tags:
+        - CR - RegulatoryComplianceAssessment
+      summary: Evaluate Regulatory Compliance
+      description: Evaluate Regulatory Compliance
+      operationId: Evaluate
+      requestBody:
+        $ref: '#/components/requestBodies/RegulatoryComplianceAssessment'
+      responses:
+        '200':
+          $ref: '#/components/responses/RegulatoryComplianceAssessment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  '/regulatory-compliance/{regulatory-compliance-id}/request':
+    put:
+      tags:
+        - CR - RegulatoryComplianceAssessment
+      summary: Request a Review of a Regulatory Compliance
+      description: Request a Review of a Regulatory Compliance
+      operationId: Request
+      parameters:
+        - $ref: '#/components/parameters/regulatory-compliance-id'
+      requestBody:
+        $ref: '#/components/requestBodies/RegulatoryComplianceAssessment'
+      responses:
+        '200':
+          $ref: '#/components/responses/RegulatoryComplianceAssessment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  '/regulatory-compliance/{regulatory-compliance-id}/retrieve':
+    get:
+      tags:
+        - CR - RegulatoryComplianceAssessment
+      summary: Retrieve Details about a Regulatory Compliance
+      description: Retrieve Details about a Regulatory Compliance
+      operationId: Retrieve
+      parameters:
+        - $ref: '#/components/parameters/regulatory-compliance-id'
+      responses:
+        '200':
+          $ref: '#/components/responses/RegulatoryComplianceAssessment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  '/regulatory-compliance/{regulatory-compliance-id}/update':
+    put:
+      tags:
+        - CR - RegulatoryComplianceAssessment
+      summary: Update Details of a Regulatory Compliance
+      description: Update Details of a Regulatory Compliance
+      operationId: Update
+      parameters:
+        - $ref: '#/components/parameters/regulatory-compliance-id'
+      requestBody:
+        $ref: '#/components/requestBodies/RegulatoryComplianceAssessment'
+      responses:
+        '200':
+          $ref: '#/components/responses/RegulatoryComplianceAssessment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  '/regulatory-compliance/{regulatory-compliance-id}/capture':
+    put:
+      tags:
+        - CR - RegulatoryComplianceAssessment
+      summary: Capture Regulatory Requirement
+      description: Capture Regulatory Requirement
+      operationId: Capture
+      parameters:
+        - $ref: '#/components/parameters/regulatory-compliance-id'
+      requestBody:
+        $ref: '#/components/requestBodies/RegulatoryComplianceAssessment'
+      responses:
+        '200':
+          $ref: '#/components/responses/RegulatoryComplianceAssessment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    HTTPError:
+      type: object
+      properties:
+        status_code:
+          type: string
+          format: string
+        status:
+          type: string
+          format: string
+        message:
+          type: string
+          format: string
+      description: Status Attributes
+    Text:
+      type: object
+      properties:
+        Text:
+          type: string
+          description: Text is a character string such as a finite set of characters generally in the form of words of a language. (UN/CEFACT)
+          format: datatype
+      description: "Description of the implications of non-compliance ||\r\n|"
+    BusinessUnit:
+      type: object
+      properties:
+        BusinessFunction:
+          type: string
+          description: ''
+          format: string
+        Goal:
+          type: string
+          description: ''
+          format: string
+      description: "Business unit or person accountable for the compliance with the regulation ||\r\n|"
+    Value:
+      type: object
+      properties:
+        Value:
+          type: string
+          description: "Data or set of data \n\n- A value is the concept of worth in general that is assigned or is determined by measurement, assessment or calculation. (UN/CEFACT)"
+          format: datatype
+      description: ''
+    Name:
+      type: object
+      properties:
+        Name:
+          type: string
+          description: 'A name is a word or phrase that constitutes the distinctive designation of a person, place, thing or concept. (UN/CEFAT)'
+          format: datatype
+      description: "Name by which a party is known and which is usually used to identify that party. (ISO20022)\n"
+    PartyTypeValues:
+      enum:
+        - Person
+        - Organisation
+      type: string
+      description: ">\r\n* `Person` - Human entity, as distinguished from a corporate entity (which is sometimes referred to as an 'artificial person'). ISO20022\r\n* `Organisation` - Organised structure that is set up for a particular purpose. For example, a business, government body, department, charity, or financial institution. ISO20022\r\n"
+    DateTimeTypeValues:
+      enum:
+        - MaturityDate
+        - InitiatedDate
+        - RequestedDate
+        - ExecutedDate
+        - OpenDate
+        - CloseDate
+        - ExpiryDate
+        - EffectiveDate
+        - CreatingDate
+        - ActivationDate
+        - DeactivationDate
+        - BlockingDate
+        - SendingDate
+        - ValidFromDate
+        - ValidToDate
+        - ReceivingDate
+        - SigningDate
+        - DueDate
+        - ValueDate
+        - FulfillmentDate
+      type: string
+      description: ">\r\n* `MaturityDate` - \r\n* `InitiatedDate` - \r\n* `RequestedDate` - \r\n* `ExecutedDate` - \r\n* `OpenDate` - \r\n* `CloseDate` - \r\n* `ExpiryDate` - \r\n* `EffectiveDate` - \r\n* `CreatingDate` - \r\n* `ActivationDate` - \r\n* `DeactivationDate` - \r\n* `BlockingDate` - \r\n* `SendingDate` - \r\n* `ValidFromDate` - \r\n* `ValidToDate` - \r\n* `ReceivingDate` - \r\n* `SigningDate` - \r\n* `DueDate` - \r\n* `ValueDate` - \r\n* `FulfillmentDate` - \r\n"
+    DateTime:
+      type: object
+      properties:
+        DateTimeContent:
+          $ref: '#/components/schemas/Text'
+        TimeZoneCode:
+          $ref: '#/components/schemas/Text'
+        DaylightSavingIndicator:
+          $ref: '#/components/schemas/Text'
+        DateTimeType:
+          $ref: '#/components/schemas/DateTimeTypeValues'
+      description: Date until which the regulation applies ISODateTime|ISODateTime (https://www.iso20022.org/standardsrepository/type/ISODateTime)|Standard|ISO20022 BM ()
+    PartyIdentificationTypeValues:
+      enum:
+        - Taxidentificationnumber
+        - Nationalregistrationnumber
+        - Registrationauthorityidentification
+        - LEI(LegalEntityIdentifier)
+        - Alienregistrationnumber
+        - Passportnumber
+        - Taxexemptidentificationnumber
+        - Corporateidentification
+        - Driverlicensenumber
+        - Foreigninvestmentidentitynumber
+        - Socialsecuritynumber
+        - Identitycardnumber
+        - Concat
+        - Nationalregistrationidentificationnumber
+      type: string
+      description: ">\r\n* `Taxidentificationnumber` - Number assigned by a tax authority to an entity.\r\n* `Nationalregistrationnumber` - Number assigned by a national registration authority to an entity. In Singapore this is known as the NRIC. (ISO20022)\r\n* `Registrationauthorityidentification` - An identifier for the Legal Entity in a business registry in the jurisdiction of legal registration, or in the appropriate registration authority. (ISO20022)\r\n* `LEI(LegalEntityIdentifier)` - \r\n* `Alienregistrationnumber` - Number assigned by a government agency to identify foreign nationals.\r\n* `Passportnumber` - Number assigned by a passport authority.\r\n* `Taxexemptidentificationnumber` - Number assigned to a tax exempt entity.\r\n* `Corporateidentification` - Number assigned to a corporate entity.\r\n* `Driverlicensenumber` - Number assigned to a driver's license.\r\n* `Foreigninvestmentidentitynumber` - Number assigned to a foreign investor (other than the alien number).\r\n* `Socialsecuritynumber` - Number assigned by a social security agency.\r\n* `Identitycardnumber` - Number assigned by a national authority to an identity card.\r\n* `Concat` - Number assigned by an issuer to identify a customer via the concatenation of the birthdate and characters of the first name and surname.\r\n* `Nationalregistrationidentificationnumber` - National registration identification number. In Singapore this is known as the NRIC.\r\n"
+    PartyIdentification:
+      type: object
+      properties:
+        PartyIdentificationType:
+          $ref: '#/components/schemas/PartyIdentificationTypeValues'
+        PartyIdentification:
+          $ref: '#/components/schemas/Identifier'
+      description: ''
+    PartyLegalStructureTypeValues:
+      enum:
+        - Individual
+        - CommunityInterestCompany
+        - CharitableIncorporatedOrganisation
+        - Co-Operative
+        - Charity
+        - GeneralPartnership
+        - LimitedLiabilityPartnership
+        - ScottishLimitedPartnership
+        - LimitedPartnership
+        - PrivateLimitedCompany
+        - PublicLimitedCompany
+        - Sole(SoleTrader)
+      type: string
+      description: ">\r\n* `Individual` - \r\n* `CommunityInterestCompany` - \r\n* `CharitableIncorporatedOrganisation` - \r\n* `Co-Operative` - \r\n* `Charity` - \r\n* `GeneralPartnership` - \r\n* `LimitedLiabilityPartnership` - \r\n* `ScottishLimitedPartnership` - \r\n* `LimitedPartnership` - \r\n* `PrivateLimitedCompany` - \r\n* `PublicLimitedCompany` - \r\n* `Sole(SoleTrader)` - \r\n"
+    Party:
+      type: object
+      properties:
+        PartyName:
+          $ref: '#/components/schemas/Name'
+        PartyType:
+          $ref: '#/components/schemas/PartyTypeValues'
+        PartyDateTime:
+          $ref: '#/components/schemas/DateTime'
+        PartyIdentification:
+          $ref: '#/components/schemas/PartyIdentification'
+        PartyLegalStructureType:
+          $ref: '#/components/schemas/PartyLegalStructureTypeValues'
+      description: ''
+    DateTimePeriod:
+      type: object
+      properties:
+        FromDateTime:
+          $ref: '#/components/schemas/DateTime'
+        ToDateTime:
+          $ref: '#/components/schemas/DateTime'
+      description: ''
+    PartyInvolvementTypeValues:
+      enum:
+        - Agreementinvolvement
+        - Partyinvolvement
+        - Arrangementinvolvement
+        - Designspecificationinvolvement
+        - Relationshipinvolvement
+        - Locationinvolvement
+        - Bankguaranteeinvolvement
+      type: string
+      description: ">\r\n* `Agreementinvolvement` - \r\n* `Partyinvolvement` - \r\n* `Arrangementinvolvement` - \r\n* `Designspecificationinvolvement` - \r\n* `Relationshipinvolvement` - \r\n* `Locationinvolvement` - \r\n* `Bankguaranteeinvolvement` - \r\n"
+    PartyRole:
+      type: object
+      properties:
+        PartyRoleType:
+          $ref: '#/components/schemas/Text'
+        PartyRoleName:
+          $ref: '#/components/schemas/Name'
+        PartyRoleValidityPeriod:
+          $ref: '#/components/schemas/DateTimePeriod'
+        PartyInvolvementType:
+          $ref: '#/components/schemas/PartyInvolvementTypeValues'
+      description: ''
+    InvolvedParty:
+      type: object
+      properties:
+        PartyReference:
+          $ref: '#/components/schemas/Party'
+        PartyInvolvement:
+          $ref: '#/components/schemas/PartyRole'
+      description: "Reference to the business unit or party that requested the assessment ||\r\n|"
+    Identifier:
+      type: object
+      properties:
+        IdentifierValue:
+          $ref: '#/components/schemas/Value'
+        IdentifierIssuingAuthority:
+          $ref: '#/components/schemas/InvolvedParty'
+        IdentifierStartDate:
+          $ref: '#/components/schemas/DateTime'
+        IdentifierEndDate:
+          $ref: '#/components/schemas/DateTime'
+      description: An unique reference to an item or an occurrence of Regulatory Compliance Assessment GenericIdentification|GenericIdentification (https://www.iso20022.org/standardsrepository/type/GenericIdentification)|Standard|ISO20022 BM ()
+    ProductIdentificationTypeValues:
+      enum:
+        - ISINCode
+        - PackageCode
+        - Buyersitemnumber
+        - Commercialdescriptioncodename
+        - EAN
+        - Harmonizedtariffcodename
+        - Manufacturersitemnumber
+        - Modelnumber
+        - Partnumber
+        - Quotacategory
+        - Stylenumber
+        - Suppliersitemnumber
+        - Universalproductcode
+      type: string
+      description: ">\r\n* `ISINCode` - \r\n* `PackageCode` - \r\n* `Buyersitemnumber` - Product identifier assigned by the buyer.\r\n* `Commercialdescriptioncodename` - A code to identify a product based on applicable commercial conditions.\r\n* `EAN` - The unique EAN (European Article Number) code.\r\n* `Harmonizedtariffcodename` - Classification of goods as developed by the Customs Cooperation council.\r\n* `Manufacturersitemnumber` - Product identifier as assigned by the manufacturer.\r\n* `Modelnumber` - Reference number assigned by the manufacturer to differentiate variations in similar products in a class or group.\r\n* `Partnumber` - Reference assigned by the manufacturer to a product part.\r\n* `Quotacategory` - Product identifier used by the retail industry.\r\n* `Stylenumber` - Identification of the style of a product.\r\n* `Suppliersitemnumber` - Number assigned to an article by the supplier of that article.\r\n* `Universalproductcode` - Number assigned to a manufacturer's product by the Product Code Council.\r\n"
+    ProductIdentification:
+      type: object
+      properties:
+        ProductIdentification:
+          $ref: '#/components/schemas/Identifier'
+        ProductIdentificationType:
+          $ref: '#/components/schemas/ProductIdentificationTypeValues'
+      description: The identifier of product e.g. ISIN Code.
+    BankingProductTypeValues:
+      enum:
+        - LoanProduct
+        - CurrentAccountProduct
+        - SavingAccountProduct
+        - BrokeredProduct
+        - TermDepositProduct
+      type: string
+      description: ">\r\n* `LoanProduct` - \r\n* `CurrentAccountProduct` - \r\n* `SavingAccountProduct` - \r\n* `BrokeredProduct` - \r\n* `TermDepositProduct` - \r\n"
+    Status:
+      type: object
+      properties:
+        StatusReason:
+          $ref: '#/components/schemas/Text'
+        StatusDateTime:
+          $ref: '#/components/schemas/DateTime'
+        StatusValidityPeriod:
+          $ref: '#/components/schemas/DateTimePeriod'
+        StatusInvolvedParty:
+          $ref: '#/components/schemas/InvolvedParty'
+      description: ''
+    ProductStatusTypeValues:
+      enum:
+        - Initiated
+        - Announced
+        - Sold
+        - Obsolete
+        - Active
+      type: string
+      description: ">\r\n* `Initiated` - \r\n* `Announced` - \r\n* `Sold` - \r\n* `Obsolete` - \r\n* `Active` - \r\n"
+    ProductStatus:
+      type: object
+      properties:
+        ProductStatus:
+          $ref: '#/components/schemas/Status'
+        ProductStatusType:
+          $ref: '#/components/schemas/ProductStatusTypeValues'
+      description: 'Refers to the lifecycle of a product (e.g., initiated, announced, active, obsolete, withdrawn).'
+    BankingProduct:
+      type: object
+      properties:
+        ProductIdentification:
+          $ref: '#/components/schemas/ProductIdentification'
+        ProductType:
+          $ref: '#/components/schemas/BankingProductTypeValues'
+        ProductLifecycleStatus:
+          $ref: '#/components/schemas/ProductStatus'
+        ProductPriority:
+          $ref: '#/components/schemas/Text'
+        ProductDescription:
+          $ref: '#/components/schemas/Text'
+        ProductVersion:
+          $ref: '#/components/schemas/Text'
+        ProductName:
+          $ref: '#/components/schemas/Name'
+      description: "Reference to the product or service being assessed, possibly in combination with the referenced customer and the referenced business unit Product_x000D_\n|Product (https://www.iso20022.org/standardsrepository/type/Product)|Standard|ISO20022 BM ()"
+    RegulatoryAuthority:
+      type: object
+      properties:
+        RegulatoryAuthority:
+          type: string
+          description: An organisation that is alowed to impose regulations
+          format: class
+      description: "Reference to the authority pertaining to the evaluated regulation ||\r\n|"
+    Regulation:
+      type: object
+      properties:
+        RegulationDefinition:
+          $ref: '#/components/schemas/Text'
+      description: "Reference to the specific regulation against which the assessment is done ||\r\n|"
+    GuideLine:
+      type: object
+      properties:
+        Guideline:
+          type: string
+          description: "A recommended practice (adapted from Business Dictionary)\nA general rule, principle, or piece of advice."
+          format: class
+      description: "Guidelines issued by the regulator about how to comply with the regulation ||\r\n|"
+    FinancialDocumentTypeValues:
+      enum:
+        - Meteredserviceinvoice
+        - Creditnoterelatedtofinancialadjustment
+        - Debitnoterelatedtofinancialadjustment
+        - Commercialinvoice
+        - Creditnote
+        - Debitnote
+        - Hireinvoice
+        - Selfbilledinvoice
+        - Remittanceadvicemessage
+        - Relatedpaymentinstruction
+        - Commercialcontract
+        - Foreignexchangedealreference
+        - Statementofaccount
+        - Dispatchadvice
+        - Purchaseorder
+        - Structuredcommunicationreference
+        - Billoflading
+        - Voucher
+        - Accountreceivableopenitem
+        - Tradeservicesutilitytransaction
+        - Cashierreceipt
+        - Customerreceipt
+        - Journal
+        - Salereceipt
+      type: string
+      description: ">\r\n* `Meteredserviceinvoice` - Document is an invoice claiming payment for the supply of metered services, for example gas or electricity supplied to a fixed meter.\r\n* `Creditnoterelatedtofinancialadjustment` - Document is a credit note for the final amount settled for a commercial transaction.\r\n* `Debitnoterelatedtofinancialadjustment` - Document is a debit note for the final amount settled for a commercial transaction.\r\n* `Commercialinvoice` - Document is an invoice.\r\n* `Creditnote` - Document is a credit note.\r\n* `Debitnote` - Document is a debit note.\r\n* `Hireinvoice` - Document is an invoice for the hiring of human resources or renting goods or equipment.\r\n* `Selfbilledinvoice` - Document is an invoice issued by the debtor.\r\n* `Remittanceadvicemessage` - Document is a remittance advice sent separately from the current transaction.\r\n* `Relatedpaymentinstruction` - Document is a linked payment instruction to which the current payment instruction is related, for example, in a cover scenario.\r\n* `Commercialcontract` - Document is an agreement between the parties, stipulating the terms and conditions of the delivery of goods or services.\r\n* `Foreignexchangedealreference` - Document is a pre-agreed or pre-arranged foreign exchange transaction to which the payment transaction refers.\r\n* `Statementofaccount` - Document is a statement of the transactions posted to the debtor's account at the supplier.\r\n* `Dispatchadvice` - Document is a dispatch advice.\r\n* `Purchaseorder` - Document is a purchase order.\r\n* `Structuredcommunicationreference` - Document is a structured communication reference provided by the creditor to identify the referred transaction.\r\n* `Billoflading` - Document is a shipping notice.\r\n* `Voucher` - Document is an electronic payment document.\r\n* `Accountreceivableopenitem` - Document is a payment that applies to a specific source document.\r\n* `Tradeservicesutilitytransaction` - Document is a transaction identifier as assigned by the Trade Services Utility.\r\n* `Cashierreceipt` - When the Sale system print the Cashier copy of the Payment receipt.\r\n* `Customerreceipt` - When the Sale System requires   the POI system to print the Customer receipt.\r\n* `Journal` - When the POI or the Sale System wants to store a message on the journal printer or electronic journal of the Sale Terminal (it is sometimes a Sale Logging/Journal Printer).\r\n* `Salereceipt` - When the Sale System requires the POI system to print the Sale receipt.\r\n"
+    DocumentDateTimeTypeValues:
+      enum:
+        - CreationDate
+        - CapturingDate
+        - VersionDate
+        - ValueDate
+        - IssueDate
+      type: string
+      description: ">\r\n* `CreationDate` - \r\n* `CapturingDate` - \r\n* `VersionDate` - \r\n* `ValueDate` - \r\n* `IssueDate` - \r\n"
+    Document:
+      type: object
+      properties:
+        DocumentIdentification:
+          $ref: '#/components/schemas/Identifier'
+        DocumentVersion:
+          type: string
+          description: ''
+          format: number
+        DocumentType:
+          $ref: '#/components/schemas/FinancialDocumentTypeValues'
+        DocumentStatus:
+          $ref: '#/components/schemas/Status'
+        DocumentDateTime:
+          $ref: '#/components/schemas/DateTime'
+        DocumentName:
+          $ref: '#/components/schemas/Name'
+        DocumentDateTimeType:
+          $ref: '#/components/schemas/DocumentDateTimeTypeValues'
+        DocumentPurpose:
+          $ref: '#/components/schemas/Text'
+        DocumentFormat:
+          $ref: '#/components/schemas/Text'
+        DocumentSubject:
+          $ref: '#/components/schemas/Text'
+        DocumentDescription:
+          $ref: '#/components/schemas/Text'
+        DocumentValidityPeriod:
+          $ref: '#/components/schemas/DateTimePeriod'
+      description: "A reference to an instance in Document Directory Document _x000D_\n|Document (https://www.iso20022.org/standardsrepository/type/Document)|Standard|ISO20022 BM ()"
+    WorkProductTypeValues:
+      enum:
+        - Document
+        - WorkingPaper
+        - ActivityLog
+        - Form
+        - File
+        - MeetingSchedule
+        - MeetingMinute
+      type: string
+      description: ">\r\n* `Document` - \r\n* `WorkingPaper` - \r\n* `ActivityLog` - \r\n* `Form` - \r\n* `File` - File of consolidated notes, evaluations and recommendations for the work task\r\n* `MeetingSchedule` - \r\n* `MeetingMinute` - \r\n"
+    WorkProduct:
+      type: object
+      properties:
+        WorkProductType:
+          $ref: '#/components/schemas/WorkProductTypeValues'
+        WorkProductIdentifoication:
+          $ref: '#/components/schemas/Identifier'
+      description: "Work documentation, forms and schedules produced and referenced during the assessment ||\r\n|"
+    OrganisationLegalStructureTypeValues:
+      enum:
+        - Corporation
+        - Individual
+        - Supranational
+        - Sovereign
+        - Municipal
+        - Province
+        - State
+        - County
+        - Partnership
+        - Financialinstitution
+        - National
+      type: string
+      description: 'A customer type to which the regulation applies, Retail, Private banking, Corporate, Large corporate LegalStructureCode|LegalStructureCode (https://www.iso20022.org/standardsrepository/type/LegalStructureCode)|Standard|ISO20022 ()'
+    ResidentalStatusTypeValues:
+      enum:
+        - Resident
+        - Permanentresident
+        - Nonresident
+      type: string
+      description: 'Residence status of customers to which the regulation applies. National-resident, Foreign national-Resident, National-non resident, Foreign national-non resident ResidentialStatusCode|ResidentialStatusCode (https://www.iso20022.org/standardsrepository/type/ResidentialStatusCode)|Standard|ISO20022 BM ()'
+    Postaladdresstypevalues:
+      enum:
+        - Business
+        - Correspondence
+        - Deliveryto
+        - Mailto
+        - Pobox
+        - Postal
+        - Residential
+        - Statement
+      type: string
+      description: ">\r\n* `Business` - \r\n* `Correspondence` - \r\n* `Deliveryto` - \r\n* `Mailto` - \r\n* `Pobox` - \r\n* `Postal` - \r\n* `Residential` - \r\n* `Statement` - \r\n"
+    ResidentialAddress:
+      type: object
+      properties:
+        AddressType:
+          $ref: '#/components/schemas/Postaladdresstypevalues'
+        AddressLine:
+          $ref: '#/components/schemas/Text'
+        StreetName:
+          $ref: '#/components/schemas/Name'
+        BuildingNumber:
+          type: string
+          description: Number that identifies the position of a building on a street.
+          format: number
+        PostCode:
+          $ref: '#/components/schemas/Identifier'
+        TownName:
+          $ref: '#/components/schemas/Name'
+        CountrySubDivision:
+          $ref: '#/components/schemas/Geographicalareatypevalues'
+        Country:
+          $ref: '#/components/schemas/Country'
+        Department:
+          $ref: '#/components/schemas/Text'
+        SubDepartment:
+          $ref: '#/components/schemas/Text'
+      description: Their given residential address  
+    Geographicalareatypevalues:
+      enum:
+        - Continent
+        - Country
+        - State
+        - District
+        - Province
+        - Town
+        - City
+        - Region
+      type: string
+      description: ">\r\n* `Continent` - \r\n* `Country` - \r\n* `State` - \r\n* `District` - \r\n* `Province` - \r\n* `Town` - \r\n* `City` - \r\n* `Region` - \r\n"  
+    Country:
+      type: object
+      properties:
+        CountryCode:
+          type: string
+          description: '/n'
+      description: The customer nationality and history as appropriate  
+    RegulatoryAssessmentResult:
+      type: object
+      properties:
+        RegulatoryAssessmentStatus:
+          type: string
+          description: '/n'
+        RegulatoryAssessmentDecisionType:
+          type: string
+          description: '/n'
+        RegulatoryAssessmentDecisionDetails:
+          type: string
+          description: '/n'
+        RegulatoryAssessmentRiskScore:
+          type: string
+          description: '/n'
+        RegulatoryAssessmentDecision:
+          type: string
+          description: '/n'
+    RegulatoryComplianceAssessment:
+      type: object
+      properties:
+        RegulatoryAssessmentType:
+          $ref: '#/components/schemas/Text'
+        BusinessUnitReference:
+          $ref: '#/components/schemas/BusinessUnit'
+        ProductandServiceReference:
+          $ref: '#/components/schemas/BankingProduct'
+        CustomerReference:
+          $ref: '#/components/schemas/InvolvedParty'
+        RegulatoryAuthorityReference:
+          $ref: '#/components/schemas/RegulatoryAuthority'
+        RegulationReference:
+          $ref: '#/components/schemas/Regulation'
+        RegulationDefinition:
+          $ref: '#/components/schemas/Text'
+        RegulationComplianceandReportingRequirements:
+          $ref: '#/components/schemas/Text'
+        RegulationAccountability:
+          $ref: '#/components/schemas/BusinessUnit'
+        RegulationPenalties:
+          $ref: '#/components/schemas/Text'
+        RegulationGuideline:
+          $ref: '#/components/schemas/GuideLine'
+        DocumentReference:
+          $ref: '#/components/schemas/Document'
+        RegulatoryAssessmentWorkProducts:
+          $ref: '#/components/schemas/WorkProduct'
+        RegulatoryAssessmentResult:
+          $ref: '#/components/schemas/RegulatoryAssessmentResult'
+        RegulatoryComplianceAssessmentReference:
+          $ref: '#/components/schemas/Identifier'
+        AssessmentRequestor:
+          $ref: '#/components/schemas/InvolvedParty'
+        AssessmentStartDate:
+          $ref: '#/components/schemas/DateTime'
+        AssessmentCompletionDate:
+          $ref: '#/components/schemas/DateTime'
+        RegulationCustomerType:
+          $ref: '#/components/schemas/OrganisationLegalStructureTypeValues'
+        RegulationCustomerResidenceStatus:
+          $ref: '#/components/schemas/ResidentalStatusTypeValues'
+        RegulationValidfromDate:
+          $ref: '#/components/schemas/DateTime'
+        RegulationValidtoDate:
+          $ref: '#/components/schemas/DateTime'
+        ResidentialAddress:
+          $ref: '#/components/schemas/ResidentialAddress'  
+      description: 'To test or assess an entity, possibly against some formal qualification or certification requirement within Regulatory Compliance. '
+  responses:
+    BadRequest:
+      description: BadRequest
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    NotFound:
+      description: NotFound
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    TooManyRequests:
+      description: TooManyRequests
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    InternalServerError:
+      description: InternalServerError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HTTPError'
+    RegulatoryComplianceAssessment:
+      description: RegulatoryComplianceAssessment
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RegulatoryComplianceAssessment'
+  parameters:
+    regulatory-compliance-id:
+      name: regulatory-compliance-id
+      in: path
+      required: true
+      style: simple
+      schema:
+        type: string
+  requestBodies:
+    RegulatoryComplianceAssessment:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RegulatoryComplianceAssessment'
+      required: true
